@@ -17,3 +17,12 @@ for(i in 1:ncol(dane)) {
 }
 
 # Widoczne jest, że wiele zmiennych należy zmienić na typ factor
+
+# Liczenie braków danych
+
+na_count <- sum(!complete.cases(dane))
+na_count
+
+na_count / nrow(dane)
+
+# Nieco ponad 17% obserwacji posiada braki danych
