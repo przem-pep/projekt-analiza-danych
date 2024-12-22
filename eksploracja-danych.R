@@ -26,3 +26,9 @@ na_count
 na_count / nrow(dane)
 
 # Nieco ponad 17% obserwacji posiada braki danych
+
+# Zbadanie liczby braków danych w poszczególnych kolumnach
+
+for(i in 1:ncol(dane)) {
+  cat("Liczba braków danych w kolumnie", names(dane[, i]), ":", sum(is.na(dane[ , i])), "\n")
+}
