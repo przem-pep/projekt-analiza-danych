@@ -69,8 +69,9 @@ dane$Gender <- ifelse(dane$Gender == "Female", 1, 2)
 dane$Gender <- factor(dane$Gender, levels = c(1, 2), labels = c("Female", "Male"))
 
 
-rules <- check_that(
-  dane,
+# Stworzenie reguł walidacyjnych
+
+rules <- check_that(dane,
   
   # Reguły dla zmiennej Hours_Studied
   
