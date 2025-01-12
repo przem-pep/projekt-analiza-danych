@@ -1,6 +1,8 @@
 library(validate)
 library(tidyverse)
 
+dane <- read_csv("czynniki.csv")
+
 
 # Należy najpierw zawrzeć przekodowanie zmiennych
 
@@ -100,55 +102,56 @@ rules <- check_that(
   # Reguły dla zmiennej Sleep_Hours
   
   is.numeric(Sleep_Hours), #13
-  Sleep_Hours >= 0, Sleep_Hours <= 24, #14
+  Sleep_Hours >= 0, #14
+  Sleep_Hours <= 24, #15
   
   # Reguły dla zmiennej Previous_Scores
   
-  is.numeric(Previous_Scores), #15
-  Previous_Scores >= 0, #16
-  Previous_Scores <= 100, #17
+  is.numeric(Previous_Scores), #16
+  Previous_Scores >= 0, #17
+  Previous_Scores <= 100, #18
   
   # Reguły dla zmiennej Motivation_Level
   
-  is.factor(Motivation_Level), #18
-  Motivation_Level %in% c("Low", "Medium", "High"), #19
+  is.factor(Motivation_Level), #19
+  Motivation_Level %in% c("Low", "Medium", "High"), #20
   
   # Reguły dla zmiennej Internet_Access
   
-  is.factor(Internet_Access), #20
-  Internet_Access %in% c("No", "Yes"), #21
+  is.factor(Internet_Access), #21
+  Internet_Access %in% c("No", "Yes"), #22
   
   # Reguły dla zmiennej Tutoring_Sessions
   
-  is.numeric(Tutoring_Sessions), #22
-  Tutoring_Sessions >= 0, #23
-  (Tutoring_Sessions - floor(Tutoring_Sessions)) == 0, #24
+  is.numeric(Tutoring_Sessions), #23
+  Tutoring_Sessions >= 0, #24
+  (Tutoring_Sessions - floor(Tutoring_Sessions)) == 0, #25
   
   # Reguły dla zmiennej Family_Income
   
-  is.factor(Family_Income), #25
-  Family_Income %in% c("Low", "Medium", "High"), #26
+  is.factor(Family_Income), #26
+  Family_Income %in% c("Low", "Medium", "High"), #27
   
   # Reguły dla zmiennej Teacher_Quality
   
-  is.factor(Teacher_Quality), #27
-  Teacher_Quality %in% c("Low", "Medium", "High"), #28
+  is.factor(Teacher_Quality), #28
+  Teacher_Quality %in% c("Low", "Medium", "High"), #29
   
   # Reguły dla zmiennej School_Type
   
-  is.factor(School_Type), #29
-  School_Type %in% c("Public", "Private"), #30
+  is.factor(School_Type), #30
+  School_Type %in% c("Public", "Private"), #31
   
   # Reguły dla zmiennej Peer_Influence
   
-  is.factor(Peer_Influence), #31
-  Peer_Influence %in% c("Negative", "Neutral", "Positive"), #32
+  is.factor(Peer_Influence), #32
+  Peer_Influence %in% c("Negative", "Neutral", "Positive"), #33
   
   # Reguły dla zmiennej Physical_Activity
   
-  is.numeric(Physical_Activity), #33
-  Physical_Activity >= 0, #34
-  Physical_Activity <= 168, #35
+  is.numeric(Physical_Activity), #34
+  Physical_Activity >= 0, #35
+  Physical_Activity <= 168, #36
   
   # Reguły dla zmiennej Learning_Disabilities
   
@@ -172,7 +175,7 @@ rules <- check_that(
   
   # Reguły dla zmiennej Exam_Score
   
-  is.factor(Exam_Score), #45
+  is.numeric(Exam_Score), #45
   Exam_Score >= 0, #46
   Exam_Score <= 100 #47
 )
