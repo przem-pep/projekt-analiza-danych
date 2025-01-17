@@ -245,3 +245,38 @@ summary(rules)
 ```
 
 Istnieje jedna obserwacja, w której jedna zmienna wykracza poza swój dozwolony przedział. W jednej obserwacji wynik z egzaminu (zmienna Exam_Score) został wprowadzony jako 101, mimo że wynik może wynosić maksymalnie 100. Nie ma żadnych innych obserwacji, które nie spełniają którejś z reguł walidacyjnych.
+
+### 1.2.3. Imputacje
+
+Tekst
+
+
+# 2. Wizualizacje danych
+
+## 2.1. Typ wykresu 1
+
+Tekst
+
+## 2.2. Typ wykresu 2
+
+Tekst
+
+## 2.3. Typ wykresu 3
+
+Tekst
+
+## 2.4. Typ wykresu 4
+
+Tekst
+
+# 3. Analiza opisowa
+
+Tekst
+
+# 4. Wnioskowanie statystyczne
+
+Tekst
+
+# 5. Podsumowanie
+
+Tekst
