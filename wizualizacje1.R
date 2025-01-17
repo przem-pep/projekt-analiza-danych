@@ -67,14 +67,17 @@ dane$Gender <- ifelse(dane$Gender == "Female", 1, 2)
 dane$Gender <- factor(dane$Gender, levels = c(1, 2), labels = c("Female", "Male"))
 
 
+my_theme <- theme_minimal() +
+  theme(plot.title = element_text(face = "bold", size = 16, hjust = 0.5),
+        axis.title = element_text(size = 14),
+        axis.text = element_text(size = 11))
+
 ggplot(dane, aes(x = Hours_Studied, y = Exam_Score)) +
   geom_point(size = 3, alpha = 0.1, colour = "black") +
   labs(title = "Wynik egzaminu w zależności od liczby godzin spędzonych na nauce",
        x = "Liczba godzin nauki [h]",
        y = "Wynik z egzaminu [%]") +
-  theme_minimal() +
-  theme(plot.title = element_text(face = "bold", size = 16, hjust = 0.5),
-        axis.title = element_text(size = 14))
+  my_theme
 
 ggplot(dane, aes(x = Exam_Score)) +
   geom_histogram() +
