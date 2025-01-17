@@ -103,3 +103,13 @@ for(i in 1:ncol(dane)) {
 
 # Kolumny zawierające braki danych: Sleep_Hours, Family_Income, Teacher_Quality, Parental_Education_Level,
 # Distance_from_Home, Exam_Score
+
+# Imputacje
+
+library(dlookr)
+
+dane1 <- imputate_na(dane, Sleep_Hours, Attendance, method = "mice", seed = 101)
+summary(dane$Sleep_Hours)
+summary(dane1)
+dane1
+plot(dane1)

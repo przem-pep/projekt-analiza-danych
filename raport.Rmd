@@ -8,6 +8,7 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
+library(validate)
 
 dane <- read_csv("czynniki.csv")
 
@@ -249,7 +250,6 @@ Istnieje jedna obserwacja, w której jedna zmienna wykracza poza swój dozwolony
 ### 1.2.3. Imputacje
 
 Tekst
-
 
 # 2. Wizualizacje danych
 
