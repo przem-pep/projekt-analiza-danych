@@ -40,16 +40,25 @@ plot(pressure)
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 
-# Zbiór danych
+# 1. Data Wrangling
 
-Badanym zbiorem danych jest zestaw Czynniki, który opisuje czynniki wpływające na wyniki uczniów
+Badanym zbiorem danych jest zestaw Czynniki, który opisuje czynniki wpływające na wyniki uczniów.
+
+## 1.1. Analiza wstępna
 
 ```{r}
 dane
-checkout(dane)
 ```
 
-Zestaw ten posiada 20 zmiennych oraz 6607 obserwacji. Widoczne jest, że przed wykonaniem analizy należy zmienić wiele kolumn na typ factor.
+Zestaw ten posiada 20 zmiennych oraz 6607 obserwacji.
+
+## 1.2. Czyszczenie danych
+
+Dane ogólnie rzecz biorąc nie wymagają dużo oczyszczania, nazwy zmiennych nie zawierają spacji ani polskich znaków, a obserwacje są zapisane w poprawny sposób. Zmienne jakościowe można jednak zmienić na typ factor, w celu ułatwienia analizy.
+
+### 1.2.1. Zmiana typu zmiennych ilościowych na typ factor
+
+Poniższy kod został wykorzystany, aby zmienić typ zmiennych ilościowych z typu character na typ factor.
 
 ```{r}
 dane$Parental_Involvement <- ifelse(dane$Parental_Involvement == "Low", 1,
@@ -114,4 +123,6 @@ dane$Distance_from_Home <- factor(dane$Distance_from_Home, levels = c(1, 2, 3),
 dane$Gender <- ifelse(dane$Gender == "Female", 1, 2)
 dane$Gender <- factor(dane$Gender, levels = c(1, 2), labels = c("Female", "Male"))
 ```
+
+### 1.2.2. Walidacje
 
