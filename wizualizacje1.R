@@ -67,10 +67,14 @@ dane$Gender <- ifelse(dane$Gender == "Female", 1, 2)
 dane$Gender <- factor(dane$Gender, levels = c(1, 2), labels = c("Female", "Male"))
 
 
+# Dodanie własnego niestandardowego stylu dla wykresów
+
 my_theme <- theme_minimal() +
   theme(plot.title = element_text(face = "bold", size = 16, hjust = 0.5),
         axis.title = element_text(size = 14),
         axis.text = element_text(size = 11))
+
+# Wykres punktowy wyniku z egzaminu w zależności od liczby godzin spędzonych na nauce
 
 ggplot(dane, aes(x = Hours_Studied, y = Exam_Score)) +
   geom_point(size = 3, alpha = 0.1, colour = "black") +
@@ -79,6 +83,20 @@ ggplot(dane, aes(x = Hours_Studied, y = Exam_Score)) +
        y = "Wynik z egzaminu [%]") +
   my_theme
 
+# Wykres punktowy wyniku z egzaminu w zależności od obecności
+
+ggplot(dane, aes(x = Attendance, y = Exam_Score)) +
+  geom_point(size = 3, alpha = 0.1, colour = "black") +
+  labs(title = "Wynik egzaminu w zależności od obecności",
+       x = "Obecność [%]",
+       y = "Wynik z egzaminu [%]") +
+  my_theme
+
+# Rozkład ocen z egzaminów
+
 ggplot(dane, aes(x = Exam_Score)) +
-  geom_histogram() +
-  theme_minimal()
+  geom_histogram(binwidth = 1) +
+  labs(title = "Rozkład ocen z egzaminu",
+       x = "Ocena z egzaminu",
+       y = "Liczebność") +
+  my_theme
