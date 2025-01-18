@@ -100,3 +100,11 @@ ggplot(dane, aes(x = Exam_Score)) +
        x = "Ocena z egzaminu",
        y = "Liczebność") +
   my_theme
+
+# Wykres pudełkowy wyników z egzaminu
+
+ggplot(dane, aes(y = Exam_Score)) +
+  geom_boxplot() +
+  labs(title = "Wykres pudełkowy wyników z egzaminu",
+       y = "Wynik z egzaminu [%]") +
+  my_theme
