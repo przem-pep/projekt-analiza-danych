@@ -104,12 +104,56 @@ for(i in 1:ncol(dane)) {
 # Kolumny zawierające braki danych: Sleep_Hours, Family_Income, Teacher_Quality, Parental_Education_Level,
 # Distance_from_Home, Exam_Score
 
+
+
 # Imputacje
 
 library(dlookr)
 
-dane1 <- imputate_na(dane, Sleep_Hours, Attendance, method = "mice", seed = 101)
-summary(dane$Sleep_Hours)
-summary(dane1)
-dane1
-plot(dane1)
+# Imputacja zmiennej Sleep_Hours
+
+imp1 <- imputate_na(dane, Sleep_Hours, Hours_Studied,
+                    method = "mice", seed = 101)
+plot(imp1)
+dane$Sleep_Hours <- imputate_na(dane, Sleep_Hours, Hours_Studied,
+                                method = "mice", seed = 101, no_attrs = TRUE)
+
+# Imputacja zmiennej Family_Income
+
+imp2 <- imputate_na(dane, Family_Income, Extracurricular_Activities,
+                    method = "mice", seed = 102)
+plot(imp2)
+dane$Family_Income <- imputate_na(dane, Family_Income, Extracurricular_Activities,
+                                  method = "mice", seed = 102, no_attrs = TRUE)
+
+# Imputacja zmiennej Teacher_Quality
+
+imp3 <- imputate_na(dane, Teacher_Quality, Previous_Scores,
+                    method = "mice", seed = 103)
+plot(imp3)
+dane$Teacher_Quality <- imputate_na(dane, Teacher_Quality, Previous_Scores,
+                                    method = "mice", seed = 103, no_attrs = TRUE)
+
+# Imputacja zmiennej Parental_Education_Level
+
+imp4 <- imputate_na(dane, Parental_Education_Level, Family_Income,
+                    method = "mice", seed = 104)
+plot(imp4)
+dane$Parental_Education_Level <- imputate_na(dane, Parental_Education_Level, Family_Income,
+                                             method = "mice", seed = 104, no_attrs = TRUE)
+
+# Imputacja zmiennej Distance_from_Home
+
+imp5 <- imputate_na(dane, Distance_from_Home, Sleep_Hours,
+                    method = "mice", seed = 105)
+plot(imp5)
+dane$Distance_from_Home <- imputate_na(dane, Distance_from_Home, Sleep_Hours,
+                                       method = "mice", seed = 105, no_attrs = TRUE)
+
+# Imputacja zmiennej Exam_Score
+
+imp6 <- imputate_na(dane, Exam_Score, Previous_Scores,
+                    method = "mice", seed = 106)
+plot(imp6)
+dane$Exam_Score <- imputate_na(dane, Exam_Score, Previous_Scores,
+                               method = "mice", seed = 106, no_attrs = TRUE)
