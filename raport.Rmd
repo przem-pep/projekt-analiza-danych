@@ -1,5 +1,5 @@
 ---
-title: "Raport"
+title: "Analiza czynników wpływających na wyniki uczniów"
 author: "Przemysław Peplinski, Piotr Ksepko, Wiktor Galewski, Aleksandra Wiśniewska"
 date: "`r Sys.Date()`"
 output: html_document
@@ -9,37 +9,13 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(validate)
+library(dlookr)
 
 dane <- read_csv("czynniki.csv")
 
-checkout <- function(x) {
-  for(i in 1:ncol(x)) {
-    print(table(x[ , i]))
-    cat("\n")
-  }
-}
+
 
 ```
-
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 
 # 1. Data Wrangling
 
@@ -249,7 +225,66 @@ Istnieje jedna obserwacja, w której jedna zmienna wykracza poza swój dozwolony
 
 ### 1.2.3. Imputacje
 
-Tekst
+Zestaw posiada wiele braków danych, dlatego konieczne będzie dokonanie ich imputacji. Wszystkie zmienne zostały zimputowane za pomocą metody MICE, czyli wielowymiarowego wypełniania przez równania łańcuchowe.
+
+```{r imputacje}
+
+# Imputacja zmiennej Sleep_Hours
+
+imp1 <- imputate_na(dane, Sleep_Hours, Hours_Studied,
+                    method = "mice", seed = 101)
+plot(imp1)
+dane$Sleep_Hours <- imputate_na(dane, Sleep_Hours, Hours_Studied,
+                                method = "mice", seed = 101, no_attrs = TRUE)
+
+# Imputacja zmiennej Family_Income
+
+imp2 <- imputate_na(dane, Family_Income, Extracurricular_Activities,
+                    method = "mice", seed = 102)
+plot(imp2)
+dane$Family_Income <- imputate_na(dane, Family_Income, Extracurricular_Activities,
+                                  method = "mice", seed = 102, no_attrs = TRUE)
+
+# Imputacja zmiennej Teacher_Quality
+
+imp3 <- imputate_na(dane, Teacher_Quality, Previous_Scores,
+                    method = "mice", seed = 103)
+plot(imp3)
+dane$Teacher_Quality <- imputate_na(dane, Teacher_Quality, Previous_Scores,
+                                    method = "mice", seed = 103, no_attrs = TRUE)
+
+# Imputacja zmiennej Parental_Education_Level
+
+imp4 <- imputate_na(dane, Parental_Education_Level, Family_Income,
+                    method = "mice", seed = 104)
+plot(imp4)
+dane$Parental_Education_Level <- imputate_na(dane, Parental_Education_Level, Family_Income,
+                                             method = "mice", seed = 104, no_attrs = TRUE)
+
+# Imputacja zmiennej Distance_from_Home
+
+imp5 <- imputate_na(dane, Distance_from_Home, Sleep_Hours,
+                    method = "mice", seed = 105)
+plot(imp5)
+dane$Distance_from_Home <- imputate_na(dane, Distance_from_Home, Sleep_Hours,
+                                       method = "mice", seed = 105, no_attrs = TRUE)
+
+# Imputacja zmiennej Exam_Score
+
+imp6 <- imputate_na(dane, Exam_Score, Previous_Scores,
+                    method = "mice", seed = 106)
+plot(imp6)
+dane$Exam_Score <- imputate_na(dane, Exam_Score, Previous_Scores,
+                               method = "mice", seed = 106, no_attrs = TRUE)
+```
+
+Po wykonaniu tych imputacji usunięto wszystkie braki danych.
+
+```{r}
+for(i in 1:ncol(dane)) {
+  cat("Liczba braków danych w kolumnie", names(dane[, i]), ":", sum(is.na(dane[ , i])), "\n")
+}
+```
 
 # 2. Wizualizacje danych
 
