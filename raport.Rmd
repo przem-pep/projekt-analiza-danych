@@ -25,6 +25,7 @@ Badanym zbiorem danych jest zestaw Czynniki, który opisuje czynniki wpływając
 
 ```{r}
 dane
+str(dane)
 ```
 
 Zestaw ten posiada 20 zmiennych oraz 6607 obserwacji.
@@ -221,7 +222,21 @@ rules <- check_that(dane,
 summary(rules)
 ```
 
-Istnieje jedna obserwacja, w której jedna zmienna wykracza poza swój dozwolony przedział. W jednej obserwacji wynik z egzaminu (zmienna Exam_Score) został wprowadzony jako 101, mimo że wynik może wynosić maksymalnie 100. Nie ma żadnych innych obserwacji, które nie spełniają którejś z reguł walidacyjnych.
+Istnieje jedna obserwacja, w której jedna zmienna wykracza poza swój dozwolony przedział.
+
+```{r}
+dane %>%
+  filter(!(Exam_Score >= 0 & Exam_Score <= 100)) %>%
+  select(Exam_Score)
+```
+
+W jednej obserwacji wynik z egzaminu (zmienna Exam_Score) został wprowadzony jako 101, mimo że wynik może wynosić maksymalnie 100. To najprawdopodobniej błąd przy wprowadzaniu danych, dlatego ta wartość zostanie zmieniona na 100.
+
+```{r}
+dane$Exam_Score <- ifelse(dane$Exam_Score > 100, 100, dane$Exam_Score)
+```
+
+Poza tym nie ma żadnych innych obserwacji, które nie spełniają którejś z reguł walidacyjnych.
 
 ### 1.2.3. Imputacje
 
