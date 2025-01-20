@@ -79,15 +79,89 @@ ggplot(dane, aes(x = Parental_Involvement, fill = Parental_Involvement)) +
   labs(title = "Zaangażowanie rodziców", x = NULL, y = "Liczba wystąpień") +
   my_theme + theme(legend.position = "none")
 
+# access to resources - wykres
 
+ggplot(dane, aes(x = Access_to_Resources, fill = Access_to_Resources)) +
+  geom_bar(color = "black") +
+  labs(title = "Dostęp do zasobów", x = NULL, y = "Liczba wystąpień") +
+  my_theme + theme(legend.position = "none")
 
+# extracurricular activities - wykres
 
+ggplot(dane, aes(x = Extracurricular_Activities, fill = Extracurricular_Activities)) +
+  geom_bar(color = "black") +
+  labs(title = "Udział w zajęciach pozalekcyjnych", x = NULL, y = "Liczba wystąpień") +
+  my_theme + theme(legend.position = "none")
 
+# motivation level - wykres
 
+ggplot(dane, aes(x = Motivation_Level, fill = Motivation_Level)) +
+  geom_bar(color = "black") +
+  labs(title = "Poziom motywacji", x = NULL, y = "Liczba wystąpień") +
+  my_theme + theme(legend.position = "none")
 
+# internet access - wykres
 
+ggplot(dane, aes(x = Internet_Access, fill = Internet_Access)) +
+  geom_bar(color = "black") +
+  labs(title = "Dostęp do internetu", x = NULL, y = "Liczba wystąpień") +
+  my_theme + theme(legend.position = "none")
 
+# family income - wykres
 
+ggplot(dane, aes(x = Family_Income, fill = Family_Income)) +
+  geom_bar(color = "black") +
+  labs(title = "Dochód rodziny", x = NULL, y = "Liczba wystąpień") +
+  my_theme + theme(legend.position = "none")
+
+# teacher quality - wykres
+
+ggplot(dane, aes(x = Teacher_Quality, fill = Teacher_Quality)) +
+  geom_bar(color = "black") +
+  labs(title = "Jakość nauczania", x = NULL, y = "Liczba wystąpień") +
+  my_theme + theme(legend.position = "none")
+
+# school type - wykres
+
+ggplot(dane, aes(x = School_Type, fill = School_Type)) +
+  geom_bar(color = "black") +
+  labs(title = "Rodzaj szkoły", x = NULL, y = "Liczba wystąpień") +
+  my_theme + theme(legend.position = "none")
+
+# peer influence - wykres
+
+ggplot(dane, aes(x = Peer_Influence, fill = Peer_Influence)) +
+  geom_bar(color = "black") +
+  labs(title = "Wpływ rówieśników", x = NULL, y = "Liczba wystąpień") +
+  my_theme + theme(legend.position = "none")
+
+# learning disabilities - wykres
+
+ggplot(dane, aes(x = Learning_Disabilities, fill = Learning_Disabilities)) +
+  geom_bar(color = "black") +
+  labs(title = "Występowanie trudności w uczeniu się", x = NULL, y = "Liczba wystąpień") +
+  my_theme + theme(legend.position = "none")
+
+# parental education level - wykres
+
+ggplot(dane, aes(x = Parental_Education_Level, fill = Parental_Education_Level)) +
+  geom_bar(color = "black") +
+  labs(title = "Poziom wykształcenia rodziców", x = NULL, y = "Liczba wystąpień") +
+  my_theme + theme(legend.position = "none")
+
+# distance from home - wykres
+
+ggplot(dane, aes(x = Distance_from_Home, fill = Distance_from_Home)) +
+  geom_bar(color = "black") +
+  labs(title = "Odległość od domu", x = NULL, y = "Liczba wystąpień") +
+  my_theme + theme(legend.position = "none")
+
+# gender - wykres
+
+ggplot(dane, aes(x = Gender, fill = Gender)) +
+  geom_bar(color = "black") +
+  labs(title = "Płeć", x = NULL, y = "Liczba wystąpień") +
+  my_theme + theme(legend.position = "none")
 
 
 
