@@ -64,3 +64,10 @@ dane$Distance_from_Home <- factor(dane$Distance_from_Home, levels = c(1, 2, 3),
 
 dane$Gender <- ifelse(dane$Gender == "Female", 1, 2)
 dane$Gender <- factor(dane$Gender, levels = c(1, 2), labels = c("Female", "Male"))
+
+# ustawienie stylu wykresow
+
+my_theme <- theme_minimal() +
+  theme(plot.title = element_text(face = "bold", size = 16, hjust = 0.5),
+        axis.title = element_text(size = 14),
+        axis.text = element_text(size = 11))
