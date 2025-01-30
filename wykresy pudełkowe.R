@@ -1,47 +1,66 @@
 czynniki <- read.csv("czynniki.csv")
 View(czynniki)
-
 install.packages("ggplot2")
 library("ggplot2")
 
-boxplot(czynniki$Hours_Studied,
-        main = "Wykres pudełkowy godzin studiowania", 
-        ylab = "Godziny studiowania",
-        col = "yellow",
-        border = "black")
 
-boxplot(czynniki$Attendance,
-        main = "Wykres pudełkowy obecności", 
-        ylab = "Obecność [%]",
-        col = "red",
-        border = "black")
+my_theme <- theme_minimal() +
+  theme(plot.title = element_text(face = "bold", size = 16, hjust = 0.5),
+        axis.title = element_text(size = 14),
+        axis.text = element_text(size = 11))
 
-boxplot(czynniki$Sleep_Hours,
-        main = "Wykres pudełkowy średniej liczby godzin snu w ciągu nocy", 
-        ylab = "Średnia liczba godzin snu w ciągu nocy",
-        col = "purple",
-        border = "black")
+#Wykres pudełkowy godzin nauki
 
-boxplot(czynniki$Previous_Scores,
-        main = "Wykres pudełkowy wyników z poprzednich egzaminów", 
-        ylab = "Wyniki z poprzednich egzaminów",
-        col = "blue",
-        border = "black")
+ggplot(czynniki, aes(y = Hours_Studied)) +
+  geom_boxplot() +
+  labs(title = "Wykres pudełkowy godzin nauki",
+       y = "Godziny nauki") +
+  my_theme
 
-boxplot(czynniki$Tutoring_Sessions,
-        main = "Wykres pudełkowy liczby sesji korepetycji w miesiącu", 
-        ylab = "Liczba sesji korepetycji w miesiącu",
-        col = "pink",
-        border = "black")
+#Wykres pudełkowy wyników z egzaminu
 
-boxplot(czynniki$Physical_Activity,
-        main = "Wykres pudełkowy średniej liczby godzin aktywności fizycznej w tygodniu", 
-        ylab = "Średnia liczba godzin aktywności fizycznej w tygodniu",
-        col = "brown",
-        border = "black")
+ggplot(czynniki, aes(y = Exam_Score)) +
+  geom_boxplot() +
+  labs(title = "Wykres pudełkowy wyników z egzaminu",
+       y = "Wynik z egzaminu [%]") +
+  my_theme
 
-boxplot(czynniki$Exam_Score,
-        main = "Wykres pudełkowy wyników z egzaminu", 
-        ylab = "Wynik z egzaminu [%]",
-        col = "orange",
-        border = "black")
+#Wykres pudełkowy obecności
+
+ggplot(czynniki, aes(y = Attendance)) +
+  geom_boxplot() +
+  labs(title = "Wykres pudełkowy obecności",
+       y = "Obecność [%]") +
+  my_theme
+
+#Wykres pudełkowy średniej liczby godzin snu w ciągu nocy
+
+ggplot(czynniki, aes(y = Sleep_Hours)) +
+  geom_boxplot() +
+  labs(title = "Wykres pudełkowy średniej liczby godzin snu w ciągu nocy",
+       y = "Średnia liczba godzin snu w ciągu nocy") +
+  my_theme
+
+#Wykres pudełkowy wyników z poprzednich egzaminów
+
+ggplot(czynniki, aes(y = Previous_Scores)) +
+  geom_boxplot() +
+  labs(title = "Wykres pudełkowy wyników z poprzednich egzaminów",
+       y = "Wyniki z poprzednich egzaminów [%]") +
+  my_theme
+
+#Wykres pudełkowy liczby sesji korepetycji w miesiącu
+
+ggplot(czynniki, aes(y = Tutoring_Sessions)) +
+  geom_boxplot() +
+  labs(title = "Wykres pudełkowy liczby sesji korepetycji w miesiącu",
+       y = "Liczba sesji korepetycji w miesiącu") +
+  my_theme
+
+#Wykres pudełkowy średniej liczby godzin aktywności fizycznej w tygodniu
+
+ggplot(czynniki, aes(y = Physical_Activity)) +
+  geom_boxplot() +
+  labs(title = "Wykres pudełkowy średniej liczby godzin aktywności fizycznej w tygodniu",
+       y = "Średnia liczba godzin aktywności fizycznej w tygodniu") +
+  my_theme
