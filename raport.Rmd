@@ -1,6 +1,6 @@
 ---
-title: "Analiza czynników wpływających na wyniki uczniów"
-author: "Przemysław Peplinski, Piotr Ksepko, Wiktor Galewski, Aleksandra Wiśniewska"
+title: "Analiza czynników wpływających na wyniki uczniów - raport z analizy danych"
+author: "Przemysław Peplinski, Wiktor Galewski, Piotr Ksepko, Aleksandra Wiśniewska"
 date: "`r Sys.Date()`"
 output: html_document
 ---
@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(validate)
 library(dlookr)
+library(plotly)
 
 dane <- read_csv("czynniki.csv")
 
@@ -303,21 +304,494 @@ for(i in 1:ncol(dane)) {
 
 # 2. Wizualizacje danych
 
-## 2.1. Typ wykresu 1
+W tym rozdziale przedstawione zostały różne formy wizualizacji danych. Wizualizacje oparte są na pakiecie ggplot2 oraz plotly. Przed stworzeniem wizualizacji zdefiniowano motyw, który będzie wykorzystywany we wszystkich wykresach, w celu ujednolicenia stylu.
 
-Tekst
+```{r}
+my_theme <- theme_minimal() +
+  theme(plot.title = element_text(face = "bold", size = 16, hjust = 0.5),
+        axis.title = element_text(size = 14),
+        axis.text = element_text(size = 11))
+```
 
-## 2.2. Typ wykresu 2
 
-Tekst
+## 2.1. Wykresy pudełkowe
 
-## 2.3. Typ wykresu 3
+W tym podrozdziale przedstawiono wykresy pudełkowe dla zmiennych ilościowych zestawu danych. Najpierw zostały zdefiniowane poniższym kodem.
 
-Tekst
+```{r}
 
-## 2.4. Typ wykresu 4
+# Wykres pudełkowy godzin nauki
 
-Tekst
+wykres1 <- ggplot(dane, aes(y = Hours_Studied)) +
+  geom_boxplot() +
+  labs(title = "Wykres pudełkowy godzin nauki",
+       y = "Godziny nauki") +
+  my_theme
+
+# Wykres pudełkowy wyników z egzaminu
+
+wykres2 <- ggplot(dane, aes(y = Exam_Score)) +
+  geom_boxplot() +
+  labs(title = "Wykres pudełkowy wyników z egzaminu",
+       y = "Wynik z egzaminu [%]") +
+  my_theme
+
+# Wykres pudełkowy obecności
+
+wykres3 <- ggplot(dane, aes(y = Attendance)) +
+  geom_boxplot() +
+  labs(title = "Wykres pudełkowy obecności",
+       y = "Obecność [%]") +
+  my_theme
+
+# Wykres pudełkowy średniej liczby godzin snu w ciągu nocy
+
+wykres4 <- ggplot(dane, aes(y = Sleep_Hours)) +
+  geom_boxplot() +
+  labs(title = "Wykres pudełkowy średniej liczby godzin snu w ciągu nocy",
+       y = "Średnia liczba godzin snu w ciągu nocy") +
+  my_theme
+
+# Wykres pudełkowy wyników z poprzednich egzaminów
+
+wykres5 <- ggplot(dane, aes(y = Previous_Scores)) +
+  geom_boxplot() +
+  labs(title = "Wykres pudełkowy wyników z poprzednich egzaminów",
+       y = "Wyniki z poprzednich egzaminów [%]") +
+  my_theme
+
+# Wykres pudełkowy liczby sesji korepetycji w miesiącu
+
+wykres6 <- ggplot(dane, aes(y = Tutoring_Sessions)) +
+  geom_boxplot() +
+  labs(title = "Wykres pudełkowy liczby sesji korepetycji w miesiącu",
+       y = "Liczba sesji korepetycji w miesiącu") +
+  my_theme
+
+# Wykres pudełkowy średniej liczby godzin aktywności fizycznej w tygodniu
+
+wykres7 <- ggplot(dane, aes(y = Physical_Activity)) +
+  geom_boxplot() +
+  labs(title = "Wykres pudełkowy średniej liczby godzin aktywności fizycznej w tygodniu",
+       y = "Średnia liczba godzin aktywności fizycznej w tygodniu") +
+  my_theme
+
+```
+
+Następnie przetworzono je do formy interaktywnej za pomocą pakietu plotly.
+
+```{r}
+ggplotly(wykres1)
+
+ggplotly(wykres2)
+
+ggplotly(wykres3)
+
+ggplotly(wykres4)
+
+ggplotly(wykres5)
+
+ggplotly(wykres6)
+
+ggplotly(wykres7)
+```
+
+
+
+## 2.2. Histogramy
+
+W tym podrozdziale przedstawione zostały rozkłady zmiennych ilościowych za pomocą histogramów. Najpierw wykresy zostaną zdefiniowane, a następnie zwizualizowane za pomocą pakietu plotly.
+
+```{r}
+# Histogram godzin nauki w tygodniu
+
+wykres8 <- ggplot(dane, aes(x = Hours_Studied)) +
+  geom_histogram(binwidth = 1, fill = "blue", color = "black", alpha = 0.7) +
+  labs(title = "Histogram godzin nauki w tygodniu", 
+       x = "Liczba godzin nauki", 
+       y = "Liczba osób") +
+  my_theme
+
+
+# Histogram obecności na zajęciach
+
+wykres9 <- ggplot(dane, aes(x = Attendance)) +
+  geom_histogram(binwidth = 5, fill = "red", color = "black", alpha = 0.7) +
+  labs(title = "Histogram obecności na zajęciach", 
+       x = "Obecność [%]", 
+       y = "Liczba osób") +
+  my_theme
+
+# Histogram średniej liczby godzin snu w ciągu nocy
+
+wykres10 <- ggplot(dane, aes(x = Sleep_Hours)) +
+  geom_histogram(binwidth = 1, fill = "pink", color = "black", alpha = 0.7) +
+  labs(title = "Histogram średniej liczby godzin snu w ciągu nocy", 
+       x = "Liczba godzin snu", 
+       y = "Liczba osób") +
+  my_theme
+
+# Histogram wyników z poprzednich egzaminów
+
+wykres11 <- ggplot(dane, aes(x = Previous_Scores)) +
+  geom_histogram(binwidth = 5, fill = "green", color = "black", alpha = 0.7) +
+  labs(title = "Histogram wyników z poprzednich egzaminów", 
+       x = "Wyniki [%]", 
+       y = "Liczba osób") +
+  my_theme
+
+# Histogram liczby sesji korepetycji w miesiącu
+
+wykres12 <- ggplot(dane, aes(x = Tutoring_Sessions)) +
+  geom_histogram(binwidth = 1, fill = "purple", color = "black", alpha = 0.7) +
+  labs(title = "Histogram liczby sesji korepetycji w miesiącu", 
+       x = "Liczba sesji", 
+       y = "Liczba osób") +
+  my_theme
+
+# Histogram średniej liczby godzin aktywności fizycznej w tygodniu
+
+wykres13 <- ggplot(dane, aes(x = Physical_Activity)) +
+  geom_histogram(binwidth = 1, fill = "blue", color = "black", alpha = 0.7) +
+  labs(title = "Histogram średniej liczby godzin aktywności fizycznej w tygodniu", 
+       x = "Liczba godzin", 
+       y = "Liczba osób") +
+  my_theme
+
+# Histogram wyników z egzaminu
+
+wykres14 <- ggplot(dane, aes(x = Exam_Score)) +
+  geom_histogram(binwidth = 5, fill = "brown", color = "black", alpha = 0.7) +
+  labs(title = "Histogram wyników z egzaminu", 
+       x = "Wynik [%]", 
+       y = "Liczba osób") +
+  my_theme
+
+```
+
+```{r}
+ggplotly(wykres8)
+
+ggplotly(wykres9)
+
+ggplotly(wykres10)
+
+ggplotly(wykres11)
+
+ggplotly(wykres12)
+
+ggplotly(wykres13)
+
+ggplotly(wykres14)
+```
+
+## 2.3. Wykresy kolumnowe
+
+W tym podrozdziale przedstawiono wykresy kolumnowe dla zmiennych jakościowych. Ponownie w pierwszej kolejności zostaną one zdefiniowane, a następnie zwizualizowane w interaktywny sposób.
+
+```{r}
+
+# parental involvement - wykres
+
+wykres15 <- ggplot(dane, aes(x = Parental_Involvement, fill = Parental_Involvement)) +
+  geom_bar(color = "black") +
+  labs(title = "Zaangażowanie rodziców", x = NULL, y = "Liczba wystąpień") +
+  my_theme + theme(legend.position = "none")
+
+# access to resources - wykres
+
+wykres16 <- ggplot(dane, aes(x = Access_to_Resources, fill = Access_to_Resources)) +
+  geom_bar(color = "black") +
+  labs(title = "Dostęp do zasobów", x = NULL, y = "Liczba wystąpień") +
+  my_theme + theme(legend.position = "none")
+
+# extracurricular activities - wykres
+
+wykres17 <- ggplot(dane, aes(x = Extracurricular_Activities,
+                             fill = Extracurricular_Activities)) +
+  geom_bar(color = "black") +
+  labs(title = "Udział w zajęciach pozalekcyjnych", x = NULL, y = "Liczba wystąpień") +
+  my_theme + theme(legend.position = "none")
+
+# motivation level - wykres
+
+wykres18 <- ggplot(dane, aes(x = Motivation_Level, fill = Motivation_Level)) +
+  geom_bar(color = "black") +
+  labs(title = "Poziom motywacji", x = NULL, y = "Liczba wystąpień") +
+  my_theme + theme(legend.position = "none")
+
+# internet access - wykres
+
+wykres19 <- ggplot(dane, aes(x = Internet_Access, fill = Internet_Access)) +
+  geom_bar(color = "black") +
+  labs(title = "Dostęp do internetu", x = NULL, y = "Liczba wystąpień") +
+  my_theme + theme(legend.position = "none")
+
+# family income - wykres
+
+wykres20 <- ggplot(dane, aes(x = Family_Income, fill = Family_Income)) +
+  geom_bar(color = "black") +
+  labs(title = "Dochód rodziny", x = NULL, y = "Liczba wystąpień") +
+  my_theme + theme(legend.position = "none")
+
+# teacher quality - wykres
+
+wykres21 <- ggplot(dane, aes(x = Teacher_Quality, fill = Teacher_Quality)) +
+  geom_bar(color = "black") +
+  labs(title = "Jakość nauczania", x = NULL, y = "Liczba wystąpień") +
+  my_theme + theme(legend.position = "none")
+
+# school type - wykres
+
+wykres22 <- ggplot(dane, aes(x = School_Type, fill = School_Type)) +
+  geom_bar(color = "black") +
+  labs(title = "Rodzaj szkoły", x = NULL, y = "Liczba wystąpień") +
+  my_theme + theme(legend.position = "none")
+
+# peer influence - wykres
+
+wykres23 <- ggplot(dane, aes(x = Peer_Influence, fill = Peer_Influence)) +
+  geom_bar(color = "black") +
+  labs(title = "Wpływ rówieśników", x = NULL, y = "Liczba wystąpień") +
+  my_theme + theme(legend.position = "none")
+
+# learning disabilities - wykres
+
+wykres24 <- ggplot(dane, aes(x = Learning_Disabilities, fill = Learning_Disabilities)) +
+  geom_bar(color = "black") +
+  labs(title = "Występowanie trudności w uczeniu się", x = NULL, y = "Liczba wystąpień") +
+  my_theme + theme(legend.position = "none")
+
+# parental education level - wykres
+
+wykres25 <- ggplot(dane, aes(x = Parental_Education_Level, fill = Parental_Education_Level)) +
+  geom_bar(color = "black") +
+  labs(title = "Poziom wykształcenia rodziców", x = NULL, y = "Liczba wystąpień") +
+  my_theme + theme(legend.position = "none")
+
+# distance from home - wykres
+
+wykres26 <- ggplot(dane, aes(x = Distance_from_Home, fill = Distance_from_Home)) +
+  geom_bar(color = "black") +
+  labs(title = "Odległość od domu", x = NULL, y = "Liczba wystąpień") +
+  my_theme + theme(legend.position = "none")
+
+# gender - wykres
+
+wykres27 <- ggplot(dane, aes(x = Gender, fill = Gender)) +
+  geom_bar(color = "black") +
+  labs(title = "Płeć", x = NULL, y = "Liczba wystąpień") +
+  my_theme + theme(legend.position = "none")
+
+```
+
+```{r}
+ggplotly(wykres15)
+
+ggplotly(wykres16)
+
+ggplotly(wykres17)
+
+ggplotly(wykres18)
+
+ggplotly(wykres19)
+
+ggplotly(wykres20)
+
+ggplotly(wykres21)
+
+ggplotly(wykres22)
+
+ggplotly(wykres23)
+
+ggplotly(wykres24)
+
+ggplotly(wykres25)
+
+ggplotly(wykres26)
+
+ggplotly(wykres27)
+```
+
+
+## 2.4. Wykresy punktowe
+
+Jako ostatnie przedstawiono wykresy punktowe. Każdorazowo przedstawiają one zależność między jedną zmienną a wynikami z egzaminu (Exam_Score). Procedura jest taka sama jak w poprzednich podrozdziałach.
+
+```{r}
+wykres28 <- ggplot(dane, aes(x = Hours_Studied, y = Exam_Score)) +
+  geom_point(size = 3, alpha = 0.1, colour = "red") +
+  labs(title = "Wynik egzaminu w zależności od liczby godzin spędzonych na nauce",
+       x = "Liczba godzin nauki [h]",
+       y = "Wynik z egzaminu [%]") +
+  my_theme
+
+wykres29 <- ggplot(dane, aes(x = Attendance, y = Exam_Score)) +
+  geom_point(size = 3, alpha = 0.1, colour = "black") +
+  labs(title = "Wynik egzaminu w zależności od obecności",
+       x = "Obecność [%]",
+       y = "Wynik z egzaminu [%]") +
+  my_theme
+
+wykres30 <- ggplot(dane, aes(x = Parental_Involvement, y = Exam_Score)) +
+  geom_point(size = 3, alpha = 0.1, colour = "purple") +
+  labs(title = "Wynik egzaminu w zależności od zaangażowania rodziców",
+       x = "Zaangażowanie rodziców",
+       y = "Wynik z egzaminu [%]") +
+  my_theme
+
+wykres31 <- ggplot(dane, aes(x = Access_to_Resources, y = Exam_Score)) +
+  geom_point(size = 3, alpha = 0.1, colour = "grey") +
+  labs(title = "Wynik egzaminu w zależności od od dostępu do zasobów naukowych",
+       x = "Dostęp do zasobów",
+       y = "Wynik z egzaminu [%]") +
+  my_theme
+
+wykres32 <- ggplot(dane, aes(x = Extracurricular_Activities, y = Exam_Score)) +
+  geom_point(size = 3, alpha = 0.1, colour = "pink") +
+  labs(title = "Wynik egzaminu w zależności od liczby zajęć pozalekcyjnych",
+       x = "Zajęcia pozalekcyjne",
+       y = "Wynik z egzaminu [%]") +
+  my_theme
+
+wykres33 <- ggplot(dane, aes(x = Sleep_Hours, y = Exam_Score)) +
+  geom_point(size = 3, alpha = 0.1, colour = "blue") +
+  labs(title = "Wynik egzaminu w zależności od liczby godzin snu",
+       x = "Liczba godzin snu [h]",
+       y = "Wynik z egzaminu [%]") +
+  my_theme
+
+wykres34 <- ggplot(dane, aes(x = Previous_Scores, y = Exam_Score)) +
+  geom_point(size = 3, alpha = 0.1, colour = "green") +
+  labs(title = "Wynik egzaminu w zależności od poprzednich wyników z egzaminu",
+       x = "Poprzednie wyniki z egzaminu [%]",
+       y = "Wynik z egzaminu [%]") +
+  my_theme
+
+wykres35 <- ggplot(dane, aes(x = Motivation_Level, y = Exam_Score)) +
+  geom_point(size = 3, alpha = 0.1, colour = "yellow") +
+  labs(title = "Wynik egzaminu w zależności od poziomu motywacji",
+       x = "Poziom motywacji",
+       y = "Wynik z egzaminu [%]") +
+  my_theme
+
+wykres36 <- ggplot(dane, aes(x = Internet_Access, y = Exam_Score)) +
+  geom_point(size = 3, alpha = 0.1, colour = "brown") +
+  labs(title = "Wynik egzaminu w zależności od dostępu do internetu",
+       x = "Dostęp do internetu",
+       y = "Wynik z egzaminu [%]") +
+  my_theme
+
+wykres37 <- ggplot(dane, aes(x = Tutoring_Sessions, y = Exam_Score)) +
+  geom_point(size = 3, alpha = 0.1, colour = "orange") +
+  labs(title = "Wynik egzaminu w zależności od ilości korepetycji",
+       x = "Ilość korepetycji",
+       y = "Wynik z egzaminu [%]") +
+  my_theme
+
+wykres38 <- ggplot(dane, aes(x = Family_Income, y = Exam_Score)) +
+  geom_point(size = 3, alpha = 0.1, colour = "lightblue") +
+  labs(title = "Wynik egzaminu w zależności od zarobku rodziny",
+       x = "Zarobek rodziny",
+       y = "Wynik z egzaminu [%]") +
+  my_theme
+
+wykres39 <- ggplot(dane, aes(x = Teacher_Quality, y = Exam_Score)) +
+  geom_point(size = 3, alpha = 0.1, colour = "lightgreen") +
+  labs(title = "Wynik egzaminu w zależności od jakości kształcenia",
+       x = "Jakość kształcenia",
+       y = "Wynik z egzaminu [%]") +
+  my_theme
+
+wykres40 <- ggplot(dane, aes(x = School_Type, y = Exam_Score)) +
+  geom_point(size = 3, alpha = 0.1, colour = "darkgreen") +
+  labs(title = "Wynik egzaminu w zależności od wybranego rodzaju szkoły",
+       x = "Rodzaj szkoły",
+       y = "Wynik z egzaminu [%]") +
+  my_theme
+
+wykres41 <- ggplot(dane, aes(x = Peer_Influence, y = Exam_Score)) +
+  geom_point(size = 3, alpha = 0.1, colour = "darkred") +
+  labs(title = "Wynik egzaminu w zależności od wpływu rówieśników",
+       x = "Wpływ rówieśników",
+       y = "Wynik z egzaminu [%]") +
+  my_theme
+
+wykres42 <- ggplot(dane, aes(x = Physical_Activity, y = Exam_Score)) +
+  geom_point(size = 3, alpha = 0.1, colour = "darkblue") +
+  labs(title = "Wynik egzaminu w zależności od liczby godzin spędzonych na aktywności fizycznej",
+       x = "Aktywność fizyczna [h]",
+       y = "Wynik z egzaminu [%]") +
+  my_theme
+
+wykres43 <- ggplot(dane, aes(x = Learning_Disabilities, y = Exam_Score)) +
+  geom_point(size = 3, alpha = 0.1, colour = "darkorange") +
+  labs(title = "Wynik egzaminu w zależności od niepełnosprawności",
+       x = "Niepełnosprawność",
+       y = "Wynik z egzaminu [%]") +
+  my_theme
+
+wykres44 <- ggplot(dane, aes(x = Parental_Education_Level, y = Exam_Score)) +
+  geom_point(size = 3, alpha = 0.1, colour = "lightpink") +
+  labs(title = "Wynik egzaminu w zależności od wykształcenia rodziców",
+       x = "Wykształcenie rodziców",
+       y = "Wynik z egzaminu [%]") +
+  my_theme
+
+wykres45 <- ggplot(dane, aes(x = Distance_from_Home, y = Exam_Score)) +
+  geom_point(size = 3, alpha = 0.1, colour = "lightgrey") +
+  labs(title = "Wynik egzaminu w zależności od odległości od domu",
+       x = "Odległość od domu",
+       y = "Wynik z egzaminu [%]") +
+  my_theme
+
+wykres46 <- ggplot(dane, aes(x = Gender, y = Exam_Score)) +
+  geom_point(size = 3, alpha = 0.1, colour = "darkgrey") +
+  labs(title = "Wynik egzaminu w zależności od płci",
+       x = "Płeć",
+       y = "Wynik z egzaminu [%]") +
+  my_theme
+```
+
+```{r}
+ggplotly(wykres28)
+
+ggplotly(wykres29)
+
+ggplotly(wykres30)
+
+ggplotly(wykres31)
+
+ggplotly(wykres32)
+
+ggplotly(wykres33)
+
+ggplotly(wykres34)
+
+ggplotly(wykres35)
+
+ggplotly(wykres36)
+
+ggplotly(wykres37)
+
+ggplotly(wykres38)
+
+ggplotly(wykres39)
+
+ggplotly(wykres40)
+
+ggplotly(wykres41)
+
+ggplotly(wykres42)
+
+ggplotly(wykres43)
+
+ggplotly(wykres44)
+
+ggplotly(wykres45)
+
+ggplotly(wykres46)
+```
 
 # 3. Analiza opisowa
 
