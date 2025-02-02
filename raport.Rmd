@@ -356,6 +356,116 @@ for(i in 1:ncol(dane)) {
 Należy sprawdzić czy po imputacji danych wciąż spełniają one reguły walidacji.
 
 ```{r Walidacja imputacji}
+rules <- check_that(dane,
+  
+  # Reguły dla zmiennej Hours_Studied
+  
+  is.numeric(Hours_Studied), #1
+  Hours_Studied >= 0, #2
+  Hours_Studied <= 168, #3
+  
+  # Reguły dla zmiennej Attendance
+  
+  is.numeric(Attendance), #4
+  Attendance >= 0, #5
+  Attendance <= 100, #6
+  
+  # Reguły dla zmiennej Parental_Involvement
+  
+  is.factor(Parental_Involvement), #7
+  Parental_Involvement %in% c("Low", "Medium", "High"), #8
+  
+  # Reguły dla zmiennej Access_to_Resources
+  
+  is.factor(Access_to_Resources), #9
+  Access_to_Resources %in% c("Low", "Medium", "High"), #10
+  
+  # Reguły dla zmiennej Extracurricular_Activities
+  
+  is.factor(Extracurricular_Activities), #11
+  Extracurricular_Activities %in% c("No", "Yes"), #12
+  
+  # Reguły dla zmiennej Sleep_Hours
+  
+  is.numeric(Sleep_Hours), #13
+  Sleep_Hours >= 0, #14
+  Sleep_Hours <= 24, #15
+  
+  # Reguły dla zmiennej Previous_Scores
+  
+  is.numeric(Previous_Scores), #16
+  Previous_Scores >= 0, #17
+  Previous_Scores <= 100, #18
+  
+  # Reguły dla zmiennej Motivation_Level
+  
+  is.factor(Motivation_Level), #19
+  Motivation_Level %in% c("Low", "Medium", "High"), #20
+  
+  # Reguły dla zmiennej Internet_Access
+  
+  is.factor(Internet_Access), #21
+  Internet_Access %in% c("No", "Yes"), #22
+  
+  # Reguły dla zmiennej Tutoring_Sessions
+  
+  is.numeric(Tutoring_Sessions), #23
+  Tutoring_Sessions >= 0, #24
+  (Tutoring_Sessions - floor(Tutoring_Sessions)) == 0, #25
+  
+  # Reguły dla zmiennej Family_Income
+  
+  is.factor(Family_Income), #26
+  Family_Income %in% c("Low", "Medium", "High"), #27
+  
+  # Reguły dla zmiennej Teacher_Quality
+  
+  is.factor(Teacher_Quality), #28
+  Teacher_Quality %in% c("Low", "Medium", "High"), #29
+  
+  # Reguły dla zmiennej School_Type
+  
+  is.factor(School_Type), #30
+  School_Type %in% c("Public", "Private"), #31
+  
+  # Reguły dla zmiennej Peer_Influence
+  
+  is.factor(Peer_Influence), #32
+  Peer_Influence %in% c("Negative", "Neutral", "Positive"), #33
+  
+  # Reguły dla zmiennej Physical_Activity
+  
+  is.numeric(Physical_Activity), #34
+  Physical_Activity >= 0, #35
+  Physical_Activity <= 168, #36
+  
+  # Reguły dla zmiennej Learning_Disabilities
+  
+  is.factor(Learning_Disabilities), #37
+  Learning_Disabilities %in% c("No", "Yes"), #38
+  
+  # Reguły dla zmiennej Parental_Education_Level
+  
+  is.factor(Parental_Education_Level), #39
+  Parental_Education_Level %in% c("High School", "College", "Postgraduate"), #40
+  
+  # Reguły dla zmiennej Distance_from_Home
+  
+  is.factor(Distance_from_Home), #41
+  Distance_from_Home %in% c("Far", "Moderate", "Near"), #42
+  
+  # Reguły dla zmiennej Gender
+  
+  is.factor(Gender), #43
+  Gender %in% c("Female", "Male"), #44
+  
+  # Reguły dla zmiennej Exam_Score
+  
+  is.numeric(Exam_Score), #45
+  Exam_Score >= 0, #46
+  Exam_Score <= 100 #47
+)
+
 summary(rules)
 ```
 
@@ -367,8 +477,8 @@ W tym rozdziale przedstawione zostały różne formy wizualizacji danych. Wizual
 
 ```{r Styl wykresu}
 my_theme <- theme_minimal() +
-  theme(plot.title = element_text(face = "bold", size = 16, hjust = 0.5),
-        axis.title = element_text(size = 14),
+  theme(plot.title = element_text(face = "bold", size = 14, hjust = 0.5),
+        axis.title = element_text(size = 12),
         axis.text = element_text(size = 11))
 ```
 
