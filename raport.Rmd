@@ -15,9 +15,10 @@ library(plotly)
 library(Rcmdr)
 library(corrplot)
 library(vcd)
+library(ggstatsplot)
+library(nortest)
 
 dane <- read_csv("czynniki.csv")
-
 
 ```
 
@@ -27,7 +28,7 @@ Badanym zbiorem danych jest zestaw Czynniki, który opisuje czynniki wpływając
 
 ## 1.1. Analiza wstępna
 
-```{r}
+```{r Wyświetlanie danych}
 dane
 str(dane)
 ```
@@ -42,7 +43,7 @@ Dane ogólnie rzecz biorąc nie wymagają dużo oczyszczania, nazwy zmiennych ni
 
 Poniższy kod został wykorzystany, aby zmienić typ zmiennych jakościowych z typu character na typ factor.
 
-```{r}
+```{r Przekodowanie zmiennych na typ factor}
 dane$Parental_Involvement <- ifelse(dane$Parental_Involvement == "Low", 1,
                                     ifelse(dane$Parental_Involvement == "Medium", 2, 3))
 dane$Parental_Involvement <- factor(dane$Parental_Involvement, levels = c(1, 2, 3),
@@ -110,7 +111,7 @@ dane$Gender <- factor(dane$Gender, levels = c(1, 2), labels = c("Female", "Male"
 
 Stworzone zostały reguły walidacyjne dla każdej zmiennej. Dla zmiennych ilościowych wprowadzono regułę wymagającego, aby zmienna była liczbą oraz określono przedziały, w których mogą się znajdować wynikające z charakteru zmiennej, np. liczba godzin snu musi być większa lub równa 0, ale nie większa niż 24 ze względu liczbę godzin w ciągu dnia. Dla zmiennych jakościowych wprowadzono ograniczenia wymagające od nich bycia zmienną factor oraz sprawdzające czy obserwacje opisane są jedną z możliwych odpowiedzi dla dane zmiennej.
 
-```{r}
+```{r Walidacje}
 # Stworzenie reguł walidacyjnych
 
 rules <- check_that(dane,
@@ -228,7 +229,7 @@ summary(rules)
 
 Istnieje jedna obserwacja, w której jedna zmienna wykracza poza swój dozwolony przedział.
 
-```{r}
+```{r Filtrowanie dla niespełnionych walidacji}
 dane %>%
   filter(!(Exam_Score >= 0 & Exam_Score <= 100)) %>%
   select(Exam_Score)
@@ -236,7 +237,7 @@ dane %>%
 
 W jednej obserwacji wynik z egzaminu (zmienna Exam_Score) został wprowadzony jako 101, mimo że wynik może wynosić maksymalnie 100. To najprawdopodobniej błąd przy wprowadzaniu danych, dlatego ta wartość zostanie zmieniona na 100.
 
-```{r}
+```{r Korekta obserwacji}
 dane$Exam_Score <- ifelse(dane$Exam_Score > 100, 100, dane$Exam_Score)
 ```
 
@@ -299,7 +300,7 @@ dane$Exam_Score <- imputate_na(dane, Exam_Score, Previous_Scores,
 
 Po wykonaniu tych imputacji usunięto wszystkie braki danych.
 
-```{r}
+```{r Braki danych wg kolumn}
 for(i in 1:ncol(dane)) {
   cat("Liczba braków danych w kolumnie", names(dane[, i]), ":", sum(is.na(dane[ , i])), "\n")
 }
@@ -309,7 +310,7 @@ for(i in 1:ncol(dane)) {
 
 W tym rozdziale przedstawione zostały różne formy wizualizacji danych. Wizualizacje oparte są na pakiecie ggplot2 oraz plotly. Przed stworzeniem wizualizacji zdefiniowano motyw, który będzie wykorzystywany we wszystkich wykresach, w celu ujednolicenia stylu.
 
-```{r}
+```{r Styl wykresu}
 my_theme <- theme_minimal() +
   theme(plot.title = element_text(face = "bold", size = 16, hjust = 0.5),
         axis.title = element_text(size = 14),
@@ -321,7 +322,7 @@ my_theme <- theme_minimal() +
 
 W tym podrozdziale przedstawiono wykresy pudełkowe dla zmiennych ilościowych zestawu danych. Najpierw zostały zdefiniowane poniższym kodem.
 
-```{r}
+```{r Boxploty}
 
 # Wykres pudełkowy godzin nauki
 
@@ -383,7 +384,7 @@ wykres7 <- ggplot(dane, aes(y = Physical_Activity)) +
 
 Następnie przetworzono je do formy interaktywnej za pomocą pakietu plotly.
 
-```{r}
+```{r Otwarcie boxplotów}
 ggplotly(wykres1)
 
 ggplotly(wykres2)
@@ -403,7 +404,7 @@ ggplotly(wykres7)
 
 W tym podrozdziale przedstawione zostały rozkłady zmiennych ilościowych za pomocą histogramów. Najpierw wykresy zostaną zdefiniowane, a następnie zwizualizowane za pomocą pakietu plotly.
 
-```{r}
+```{r Histogramy}
 # Histogram godzin nauki w tygodniu
 
 wykres8 <- ggplot(dane, aes(x = Hours_Studied)) +
@@ -470,7 +471,7 @@ wykres14 <- ggplot(dane, aes(x = Exam_Score)) +
 
 ```
 
-```{r}
+```{r Otwarcie histogramów}
 ggplotly(wykres8)
 
 ggplotly(wykres9)
@@ -490,7 +491,7 @@ ggplotly(wykres14)
 
 W tym podrozdziale przedstawiono wykresy kolumnowe dla zmiennych jakościowych. Ponownie w pierwszej kolejności zostaną one zdefiniowane, a następnie zwizualizowane w interaktywny sposób.
 
-```{r}
+```{r Wykresy kolumnowe}
 
 # parental involvement - wykres
 
@@ -586,7 +587,7 @@ wykres27 <- ggplot(dane, aes(x = Gender, fill = Gender)) +
 
 ```
 
-```{r}
+```{r Wywołanie wykresów kolumnowych}
 ggplotly(wykres15)
 
 ggplotly(wykres16)
@@ -619,7 +620,7 @@ ggplotly(wykres27)
 
 Jako ostatnie przedstawiono wykresy punktowe. Każdorazowo przedstawiają one zależność między jedną zmienną a wynikami z egzaminu (Exam_Score). Procedura jest taka sama jak w poprzednich podrozdziałach.
 
-```{r}
+```{r Wykresy punktowe}
 wykres28 <- ggplot(dane, aes(x = Hours_Studied, y = Exam_Score)) +
   geom_point(size = 3, alpha = 0.1, colour = "red") +
   labs(title = "Wynik egzaminu w zależności od liczby godzin spędzonych na nauce",
@@ -754,7 +755,7 @@ wykres46 <- ggplot(dane, aes(x = Gender, y = Exam_Score)) +
   my_theme
 ```
 
-```{r}
+```{r Wywołanie wykresów punktowych}
 ggplotly(wykres28)
 
 ggplotly(wykres29)
@@ -802,7 +803,7 @@ Kolejnym etapem projektu było wykonanie analizy opisowej danych. W tym celu obl
 
 Poniżej przedstawiono statystyki opisowe dla zmmiennych ilościowych. Obliczone zostały: średnia arytmetyczna, odchylenie standardowe, rozstęp międzykwartylowy, współczynnik zmienności, skośność, kurtoza oraz wszystkie kwartyle, w tym mediana.
 
-```{r}
+```{r Statystyki opisowe}
 stat_opisowe <- dane %>%
   select(where(is.numeric)) %>%
   numSummary(statistics = c("mean", "sd", "IQR", "CV", "quantiles",
@@ -815,7 +816,7 @@ round(stat_opisowe$table, 3)
 
 Poniżej przedstawione zostały korelacje pomiędzy zmiennymi ilościowymi, wyznaczone za pomocą współczynnika korelacji r Pearsona.
 
-```{r}
+```{r Korelacje}
 dane %>%
   select(where(is.numeric)) %>%
   cor()
@@ -827,13 +828,13 @@ dane %>%
 
 Poniżej przedstawiono macierz korelacji dla zmiennych ilościowych. Korelacje obliczone zostały za pomocą współczynnika korelacji r Pearsona.
 
-```{r}
+```{r Macierz korelacji 1}
 
 cor_matrix <- dane %>%
   select(where(is.numeric)) %>%
   cor()
 
-cor_matrix <- cor(czynniki[, c("Hours_Studied", "Attendance", "Sleep_Hours", 
+cor_matrix <- cor(dane[, c("Hours_Studied", "Attendance", "Sleep_Hours", 
                                "Previous_Scores", "Tutoring_Sessions", 
                                "Physical_Activity", "Exam_Score")], 
                   use = "pairwise.complete.obs")
@@ -845,9 +846,9 @@ corrplot(cor_matrix, method = "color", tl.cex = 0.8, addCoef.col = "black")
 
 Poniżej zaprezentowano macierz korelacji zmiennych jakościowych.
 
-```{r}
+```{r Macierz korelacji 2}
 
-# Filtracja danych ilościowych
+# Filtracja danych jakościowych
 
 dane_cor <- dane %>%
   select(where(is.factor))
@@ -892,6 +893,74 @@ corrplot(cramer_matrix, method = "color", tl.cex = 0.8, addCoef.col = "black")
 
 
 # 4. Wnioskowanie statystyczne
+
+W tym rozdziale wykonane zostanie wnioskowanie statystyczne. Podzielono je na dwie części: dla zmiennych ilościowych i jakościowych.
+
+## 4.1. Wnioskowanie statystyczne dla zmiennych ilościowych
+
+W tym podrozdziale przeprowadzone zostały testy statystyczne dla zmiennych ilościowych. Konkretnie badane jest, czy zmienne ilościowe z zestawu danych wpływają na wyniki egzaminu. Hipoteza zerowa zakłada, że nie ma takiego wpływu (jest on zerowy), natomiast hipoteza alternatywna mówi, że istnieje istotna statystycznie zależność. Stosowanym poziomem istotności alfa będzie 0,05.
+
+Na początku sprawdzona zostanie normalność rozkładu zmiennej ocen z egzaminu. Hipoteza zerowa zakłada, że rozkład jest normalny, a hipoteza alternatywna - że nie jest. Zastosowano test Kołmogorowa-Smirnowa oraz test Andersona-Darlinga.
+
+```{r Normalność Exam_Score}
+lillie.test(dane$Exam_Score)
+ad.test(dane$Exam_Score)
+```
+
+P-value z obu testów jest niższe od poziomu istotności alfa wynoszącego 0,05, więc odrzucamy hipotezę zerową na rzecz hipotezy alternatywnej. Oznacza to, że wyniki z egzaminu nie mają rozkładu normalnego.
+
+Na podstawie wykresów pudełkowych z podrozdziału 2.1 można powiedzieć, że w zmiennej Exam_Score występuje wiele wartości odstających. W tych warunkach nie będzie można skorzystać z testów parametrycznych zakładających normalność i symetrię rozkładu. Zastosowane zostaną więc testy odporne (robust). Zastosowany został test t-Studenta.
+
+```{r Test 1.1}
+# hours studied - wplyw
+ggscatterstats(data = dane, x = Hours_Studied, y = Exam_Score, type = "r")
+
+```
+
+P-value z testu jest niezwykle niskie, wynosi 1,37E-304. Jest to wartość mniejsza od poziomu istotności, więc należy odrzucić hipotezę zerową. Istnieje zależność pomiędzy liczbą godzin nauki a wynikiem z egzaminu.
+
+```{r Test 1.2}
+# attendance - wplyw
+ggscatterstats(data = dane, x = Attendance, y = Exam_Score, type = "r")
+
+```
+
+P-value z testu jest niższe od poziomu istotności, więc odrzucamy hipotezę zerową na rzecz hipotezy alternatywnej. Zatem istnieje zależność pomiędzy obecnością na zajęciach a oceną z egzaminu.
+
+```{r Test 1.3}
+# sleep hours - wplyw
+ggscatterstats(data = dane, x = Sleep_Hours, y = Exam_Score, type = "r")
+
+```
+
+P-value z testu wynosi 0,83, więc jest większe od poziomu istotności. Zatem nie ma podstaw do odrzucenia hipotezy zerowej o braku statystycznie istotnej zależności między średnią liczbą godzin snu a wynikiem z egzaminu.
+
+```{r Test 1.4}
+# previous scores - wplyw
+ggscatterstats(data = dane, x = Previous_Scores, y = Exam_Score, type = "r")
+
+```
+
+P-value z testu jest niższe od poziomu istotności alfa, więc istnieją podstawy do odrzucenia hipotezy zerowej. Istnieje więc zależność pomiędzy wcześniejszymi wynikami z egzaminów a wynikiem z egzaminu końcowego.
+
+```{r Test 1.5}
+# tutoring sessions - wplyw
+ggscatterstats(data = dane, x = Tutoring_Sessions, y = Exam_Score, type = "r")
+
+```
+
+P-value jest mniejsze od poziomu istotności, więc są podstawy do odrzucenia hipotezy zerowej. Istnieje zależność pomiędzy liczbą godzin korepetycji a wynikami z egzaminu.
+
+```{r Test 1.6}
+# physical activity - wplyw
+ggscatterstats(data = dane, x = Physical_Activity, y = Exam_Score, type = "r")
+
+```
+
+P-value z testu wynosi 0,06, więc na poziomie istotności alfa równym 0,05 nie ma podstaw do odrzucenia hipotezy zerowej o braku zależności pomiędzy średnią liczbą godzin aktywności fizycznej a wynikami z egzaminu.
+
+
+## 4.2. Wnioskowanie statystyczne dla zmiennych jakościowych
 
 Tekst
 
