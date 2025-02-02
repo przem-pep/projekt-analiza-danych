@@ -966,7 +966,43 @@ Tekst
 
 # 5. Modelowanie
 
+Jako ostatni etap projektu wykonano analizę za pomocą modelowania ekonometrycznego. Badany będzie wpływ różnych zmiennych z zestawu danych na wyniki uczniów z egzaminu. Zatem zmienną objaśnianą będzie zmienna Exam_Score, a zmiennymi objaśniającymi będą wszystkie zmienne, które w poprzednim rozdziale uznano za powiązane z wynikami egzaminów.
+
+## 5.1. Oszacowanie modelu
+
+```{r Model}
+library(censReg)
+
+dane_imp <- read_csv("czynniki-imputowane.csv")
+dane_imp$Exam_Score <- ifelse(dane_imp$Exam_Score > 100, 100, dane_imp$Exam_Score)
+
+model1 <- lm(formula = Exam_Score ~
+               Hours_Studied + Attendance + Parental_Involvement +
+               Access_to_Resources + Extracurricular_Activities +
+               Previous_Scores + Motivation_Level + Internet_Access +
+               Tutoring_Sessions + Family_Income + Teacher_Quality +
+               School_Type + Peer_Influence + Learning_Disabilities +
+               Parental_Education_Level + Distance_from_Home,
+             data = dane_imp)
+summary(model1)
+
+```
+
+## 5.2. Diagnostyka modelu
+
 Tekst
+
+## 5.3. Interpretacja modelu
+
+Na podstawie statystyki R-kwadrat można powiedzieć, że model tłumaczy 71,87% zmienności ocen uczniów z egzaminu.
+
+Interpretacja współczynników modelu:
+
+Wzrost liczby godzin nauki o 1 godzinę powoduje wzrost wyniku z egzaminu średnio o 0,29 p.p., ceteris paribus.
+
+Wzrost odsetka obecności o 1 p.p. powoduje wzrost wyniku z egzaminu średnio o 0,2 p.p., ceteris paribus.
+
+
 
 # 6. Podsumowanie
 
