@@ -244,60 +244,104 @@ dane$Exam_Score <- ifelse(dane$Exam_Score > 100, 100, dane$Exam_Score)
 
 Poza tym nie ma żadnych innych obserwacji, które nie spełniają którejś z reguł walidacyjnych.
 
-### 1.2.3. Imputacje
+### 1.2.3. Imputacje braków danych
+
+#### 1.2.3.1. Badanie braków danych
+
+```{r Liczenie NA}
+na_count <- sum(!complete.cases(dane))
+na_count
+
+na_count / nrow(dane)
+```
+
+W zestawie danych łącznie 1141 obserwacji posiada braki danych, co stanowi około 17%. Jest to bardzo dużo. Można sprawdzić, w których konkretnie kolumnach występują braki danych.
+
+```{r NA wg kolumn}
+for(i in 1:ncol(dane)) {
+  cat("Liczba braków danych w kolumnie", names(dane[, i]), ":", sum(is.na(dane[ , i])), "\n")
+}
+```
+
+
+#### 1.2.3.2. Imputacje
 
 Zestaw posiada wiele braków danych, dlatego konieczne będzie dokonanie ich imputacji. Wszystkie zmienne zostały zimputowane za pomocą metody MICE, czyli wielowymiarowego wypełniania przez równania łańcuchowe.
 
-```{r imputacje}
+```{r Sprawdzenie imputacji}
 
 # Imputacja zmiennej Sleep_Hours
 
 imp1 <- imputate_na(dane, Sleep_Hours, Hours_Studied,
                     method = "mice", seed = 101)
 plot(imp1)
-dane$Sleep_Hours <- imputate_na(dane, Sleep_Hours, Hours_Studied,
-                                method = "mice", seed = 101, no_attrs = TRUE)
 
 # Imputacja zmiennej Family_Income
 
 imp2 <- imputate_na(dane, Family_Income, Extracurricular_Activities,
                     method = "mice", seed = 102)
 plot(imp2)
-dane$Family_Income <- imputate_na(dane, Family_Income, Extracurricular_Activities,
-                                  method = "mice", seed = 102, no_attrs = TRUE)
 
 # Imputacja zmiennej Teacher_Quality
 
 imp3 <- imputate_na(dane, Teacher_Quality, Previous_Scores,
                     method = "mice", seed = 103)
 plot(imp3)
-dane$Teacher_Quality <- imputate_na(dane, Teacher_Quality, Previous_Scores,
-                                    method = "mice", seed = 103, no_attrs = TRUE)
 
 # Imputacja zmiennej Parental_Education_Level
 
 imp4 <- imputate_na(dane, Parental_Education_Level, Family_Income,
                     method = "mice", seed = 104)
 plot(imp4)
-dane$Parental_Education_Level <- imputate_na(dane, Parental_Education_Level, Family_Income,
-                                             method = "mice", seed = 104, no_attrs = TRUE)
 
 # Imputacja zmiennej Distance_from_Home
 
 imp5 <- imputate_na(dane, Distance_from_Home, Sleep_Hours,
                     method = "mice", seed = 105)
 plot(imp5)
-dane$Distance_from_Home <- imputate_na(dane, Distance_from_Home, Sleep_Hours,
-                                       method = "mice", seed = 105, no_attrs = TRUE)
 
 # Imputacja zmiennej Exam_Score
 
 imp6 <- imputate_na(dane, Exam_Score, Previous_Scores,
                     method = "mice", seed = 106)
 plot(imp6)
+```
+
+Jak widać na wykresach, metoda MICE zapewnia dobre dopasowanie do zestawu danych. Zatem można wprowadzić imputacje do zestawu danych.
+
+```{r Wprowadzenie imputacji}
+# Imputacja zmiennej Sleep_Hours
+
+dane$Sleep_Hours <- imputate_na(dane, Sleep_Hours, Hours_Studied,
+                                method = "mice", seed = 101, no_attrs = TRUE)
+
+# Imputacja zmiennej Family_Income
+
+dane$Family_Income <- imputate_na(dane, Family_Income, Extracurricular_Activities,
+                                  method = "mice", seed = 102, no_attrs = TRUE)
+
+# Imputacja zmiennej Teacher_Quality
+
+dane$Teacher_Quality <- imputate_na(dane, Teacher_Quality, Previous_Scores,
+                                    method = "mice", seed = 103, no_attrs = TRUE)
+
+# Imputacja zmiennej Parental_Education_Level
+
+dane$Parental_Education_Level <- imputate_na(dane, Parental_Education_Level, Family_Income,
+                                             method = "mice", seed = 104, no_attrs = TRUE)
+
+# Imputacja zmiennej Distance_from_Home
+
+dane$Distance_from_Home <- imputate_na(dane, Distance_from_Home, Sleep_Hours,
+                                       method = "mice", seed = 105, no_attrs = TRUE)
+
+# Imputacja zmiennej Exam_Score
+
 dane$Exam_Score <- imputate_na(dane, Exam_Score, Previous_Scores,
                                method = "mice", seed = 106, no_attrs = TRUE)
+
 ```
+
 
 Po wykonaniu tych imputacji usunięto wszystkie braki danych.
 
@@ -306,6 +350,16 @@ for(i in 1:ncol(dane)) {
   cat("Liczba braków danych w kolumnie", names(dane[, i]), ":", sum(is.na(dane[ , i])), "\n")
 }
 ```
+
+#### 1.2.3.3. Walidacja imputacji
+
+Należy sprawdzić czy po imputacji danych wciąż spełniają one reguły walidacji.
+
+```{r Walidacja imputacji}
+summary(rules)
+```
+
+Wszystkie obserwacje spełniają reguły walidacji, więc można przejść do kolejnego etapu projektu.
 
 # 2. Wizualizacje danych
 
@@ -1023,6 +1077,39 @@ P-value jest niższe od poziomu istotności, więc istnieją podstawy do odrzuce
 ```{r Test 2.6}
 ggbetweenstats(
   data = dane,
+  x = Family_Income,
+  y = Exam_Score,
+  type = "r"
+)
+```
+
+P-value jest niższe od poziomu istotności, więc istnieją podstawy do odrzucenia hipotezy zerowej na rzecz hipotezy alternatywnej. Istnieje zależność pomiędzy poziomem dochodów rodziny a wynikami uczniów z egzaminów.
+
+```{r Test 2.7}
+ggbetweenstats(
+  data = dane,
+  x = Teacher_Quality,
+  y = Exam_Score,
+  type = "r"
+)
+```
+
+P-value jest niższe od poziomu istotności, więc istnieją podstawy do odrzucenia hipotezy zerowej na rzecz hipotezy alternatywnej. Istnieje zależność pomiędzy jakością nauczycieli a wynikami uczniów z egzaminów.
+
+```{r Test 2.8}
+ggbetweenstats(
+  data = dane,
+  x = School_Type,
+  y = Exam_Score,
+  type = "r"
+)
+```
+
+P-value wynosi 0,74, a więc jest wyższe od poziomu istotności. Oznacza to, że nie ma podstaw do odrzucenia hipotezy zerowej. Zatem nie ma istotnie statystycznego powiązania pomiędzy rodzajem szkoły a wynikami uczniów z egzaminu.
+
+```{r Test 2.9}
+ggbetweenstats(
+  data = dane,
   x = Peer_Influence,
   y = Exam_Score,
   type = "r"
@@ -1031,7 +1118,18 @@ ggbetweenstats(
 
 P-value jest niższe od poziomu istotności, więc istnieją podstawy do odrzucenia hipotezy zerowej na rzecz hipotezy alternatywnej. Istnieje zależność pomiędzy wpływem rówieśników a wynikami uczniów z egzaminu.
 
-```{r Test 2.7}
+```{r Test 2.10}
+ggbetweenstats(
+  data = dane,
+  x = Learning_Disabilities,
+  y = Exam_Score,
+  type = "r"
+)
+```
+
+P-value jest niższe od poziomu istotności, więc istnieją podstawy do odrzucenia hipotezy zerowej na rzecz hipotezy alternatywnej. Istnieje zależność pomiędzy obecnością trudności w uczeniu się a wynikami uczniów z egzaminu.
+
+```{r Test 2.11}
 ggbetweenstats(
   data = dane,
   x = Parental_Education_Level,
@@ -1042,7 +1140,7 @@ ggbetweenstats(
 
 P-value jest niższe od poziomu istotności, więc istnieją podstawy do odrzucenia hipotezy zerowej na rzecz hipotezy alternatywnej. Istnieje zależność pomiędzy wykształceniem rodziców a wynikami uczniów z egzaminu.
 
-```{r Test 2.8}
+```{r Test 2.12}
 ggbetweenstats(
   data = dane,
   x = Distance_from_Home,
@@ -1052,6 +1150,17 @@ ggbetweenstats(
 ```
 
 P-value jest niższe od poziomu istotności, więc istnieją podstawy do odrzucenia hipotezy zerowej na rzecz hipotezy alternatywnej. Istnieje zależność pomiędzy odległością od domu a wynikami uczniów z egzaminu.
+
+```{r Test 2.13}
+ggbetweenstats(
+  data = dane,
+  x = Gender,
+  y = Exam_Score,
+  type = "r"
+)
+```
+
+P-value wynosi 0,51, a więc jest wyższe od poziomu istotności. Oznacza to, że nie ma podstaw do odrzucenia hipotezy zerowej. Zatem nie ma istotnie statystycznego powiązania pomiędzy płcią a wynikami uczniów z egzaminu.
 
 # 5. Modelowanie
 
@@ -1068,7 +1177,7 @@ model1 <- lm(formula = Exam_Score ~
                Access_to_Resources + Extracurricular_Activities +
                Previous_Scores + Motivation_Level + Internet_Access +
                Tutoring_Sessions + Family_Income + Teacher_Quality +
-               School_Type + Peer_Influence + Learning_Disabilities +
+               Peer_Influence + Learning_Disabilities +
                Parental_Education_Level + Distance_from_Home,
              data = dane_imp)
 summary(model1)
@@ -1078,7 +1187,7 @@ summary(model1)
 
 W tym podrozdziale została przedstawiona diagnostyka stworzonego modelu.
 
-Na podstawie współczynnika determinacji (statystyki R-kwadrat) można powiedzieć, że model tłumaczy 71,87% zmienności ocen uczniów z egzaminu.
+Na podstawie współczynnika determinacji (statystyki R-kwadrat) można powiedzieć, że model tłumaczy 71,86% zmienności ocen uczniów z egzaminu.
 
 Testując przydatność modelu, hipoteza zerowa mówi, że model nie jest istotny statystycznie, natomiast hipoteza alternatywna mówi, że jest. Na podstawie testu F można określić, że p-value z tego testu jest niższe od poziomu istotności alfa równego 0,05, co oznacza, że istnieją podstawy do odrzucenia hipotezy zerowej na rzecz hipotezy alternatywnej, co oznacza, że model jest przydatny.
 
@@ -1139,7 +1248,7 @@ Uczniowie o średnim poziomie dostępu do zasobów mają średnio o 0,96 p.p. ni
 
 Uczniowie biorący udział w zajęciach pozalekcyjnych mają średnio o 0,55 p.p. wyższe wyniki z egzaminu niż uczniowie, którzy nie biorą udziału w żadnych zajęciach pozalekcyjnych, ceteris paribus.
 
-Wzrost poprzedniego wyniku o 1 p.p. powoduje wzrost wyniku z egzaminu średnio o 0,05 p.p., ceteris paribus.
+Wzrost wyniku z poprzedniego egzaminu o 1 p.p. powoduje wzrost wyniku z egzaminu średnio o 0,05 p.p., ceteris paribus.
 
 Uczniowie o niskim poziomie motywacji mają średnio o 1,02 p.p. niższy wynik z egzaminu niż uczniowie o wysokim poziomie motywacji, ceteris paribus.
 
@@ -1173,4 +1282,4 @@ Uczniowie, którzy mają blisko do szkoły od miejsca zamieszkania mają średni
 
 # 6. Podsumowanie
 
-Tekst
+Podsumowując projekt, wykonano w nim wiele ważnych czynności z perspektywy analizy danych. W części Data Wrangling Wykonano oczyszczanie danych, walidacje danych i imputacje braków danych. W części wizualizacji wykonano wiele wykresów, które pozwoliły na zobrazowanie jak wygląda zestaw danych, korzystając z pakietów takich jak ggplot2 oraz plotly w celu tworzenia dobrze prezentujących się wizualizacji. W analizie opisowej obliczono statystyki opisowe oraz współczynniki korelacji dla wszystkich zmiennych. W części dotyczącej wnioskowania statystycznego wykonano wiele testów statystycznych, które pozwoliły na określenie struktury niektórych zmiennych oraz zbadanie występowania zależności pomiędzy zmiennymi a wynikami z egzaminów. Udało się w ten sposób ustalić, że zdecydowana większość zmiennych zawartych w zestawie danych jest powiązana z wynikami uczniów. W ostatnim rozdziale wykorzystano modelowanie ekonometryczne w celu określenia, w jaki sposób i z jaką siłą czynniki z zestawu danych wpływają na wyniki uczniów. W ten sposób stworzono model, który można również wykorzystać do przewidywania wyników uczniów. Można zatem powiedzieć, że udało się zbadać czynniki wpływające na wyniki uczniów, pod kątem jakie to są czynniki oraz w jaki sposób wpływają na wyniki.
