@@ -73,3 +73,13 @@ ggbetweenstats(
   x = Distance_from_Home,
   y = Exam_Score
 )
+ggbetweenstats(
+  data = czynniki_imputowane,
+  x = School_Type,
+  y = Exam_Score
+)
+ggbetweenstats(
+  data = czynniki_imputowane,
+  x = Gender,
+  y = Exam_Score
+)
