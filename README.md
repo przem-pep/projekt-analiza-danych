@@ -10,8 +10,11 @@ Autorami projektu są: Przemysław Peplinski, Wiktor Galewski, Piotr Ksepko, Ale
 Wkład w projekt:
 
 Przemysław Peplinski - data wrangling, opracowanie wizualizacji i wnioskowania statystycznego, modelowanie ekonometryczne, opracowanie raportu
+
 Wiktor Galewski - wizualizacje - wykresy kolumnowe, wnioskowanie statystyczne dla zmiennych ilościowych
+
 Piotr Ksepko - wizualizacje - wykresy punktowe, wnioskowanie statystyczne dla zmiennych jakościowych
+
 Aleksandra Wiśniewska - wizualizacje - wykresy pudełkowe i histogramy, analiza opisowa
 
 CC BY-SA NC
@@ -25,8 +28,11 @@ The authors of the project are: Przemysław Peplinski, Wiktor Galewski, Piotr Ks
 Contribution:
 
 Przemysław Peplinski - data wrangling, working out visualisations and statistical inference, econometric modelling, developing the report
+
 Wiktor Galewski - visualisations - bar plots, statistical inference for quantitative variables
+
 Piotr Ksepko - viusalisations - scatter plots, statistical inference for qualitative variables
+
 Aleksandra Wiśniewska - visualisations - boxplots and histograms, descriptive analysis
 
 CC BY-SA NC
