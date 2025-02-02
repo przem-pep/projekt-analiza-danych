@@ -17,6 +17,7 @@ library(corrplot)
 library(vcd)
 library(ggstatsplot)
 library(nortest)
+library(car)
 
 dane <- read_csv("czynniki.csv")
 
@@ -909,7 +910,7 @@ ad.test(dane$Exam_Score)
 
 P-value z obu testów jest niższe od poziomu istotności alfa wynoszącego 0,05, więc odrzucamy hipotezę zerową na rzecz hipotezy alternatywnej. Oznacza to, że wyniki z egzaminu nie mają rozkładu normalnego.
 
-Na podstawie wykresów pudełkowych z podrozdziału 2.1 można powiedzieć, że w zmiennej Exam_Score występuje wiele wartości odstających. W tych warunkach nie będzie można skorzystać z testów parametrycznych zakładających normalność i symetrię rozkładu. Zastosowane zostaną więc testy odporne (robust). Zastosowany został test t-Studenta.
+Na podstawie wykresów pudełkowych z podrozdziału 2.1 można powiedzieć, że w zmiennej Exam_Score występuje wiele wartości odstających. W tych warunkach nie będzie można skorzystać z testów parametrycznych zakładających normalność i symetrię rozkładu. Zastosowane zostaną więc testy odporne (robust).
 
 ```{r Test 1.1}
 # hours studied - wplyw
@@ -962,7 +963,95 @@ P-value z testu wynosi 0,06, więc na poziomie istotności alfa równym 0,05 nie
 
 ## 4.2. Wnioskowanie statystyczne dla zmiennych jakościowych
 
-Tekst
+W tym podrozdziale zostały przeprowadzone testy statystyczne dla zmiennych jakościowych. Badają powiązane konkretnych zmiennych z wynikami egzaminów. Hipoteza zerowa mówi, że nie ma powiązania pomiędzy zmiennymi, natomiast hipoteza alternatywna mówi, że istnieje istotna statystycznie zależność. Poziom istotności ponownie będzie wynosił 0,05. Ponownie ze względu na brak rozkładu normalnego i asymetrii rozkładu zmiennej Exam_Score zastosowane zostały testy odporne (robust).
+
+```{r Test 2.1}
+ggbetweenstats(
+  data = dane,
+  x = Parental_Involvement,
+  y = Exam_Score,
+  type = "r"
+)
+```
+
+P-value jest niższe od poziomu istotności, więc istnieją podstawy do odrzucenia hipotezy zerowej na rzecz hipotezy alternatywnej. Istnieje istotne statystycznie powiązanie między poziomem zaangażowania rodziców a wynikami uczniów z egzaminu.
+
+```{r Test 2.2}
+ggbetweenstats(
+  data = dane,
+  x = Access_to_Resources,
+  y = Exam_Score,
+  type = "r"
+)
+```
+
+P-value jest niższe od poziomu istotności, więc istnieją podstawy do odrzucenia hipotezy zerowej na rzecz hipotezy alternatywnej. Istnieje zależność pomiędzy dostępem do zasobów a wynikami uczniów z egzaminów.
+
+```{r Test 2.3}
+ggbetweenstats(
+  data = dane,
+  x = Extracurricular_Activities,
+  y = Exam_Score,
+  type = "r"
+)
+```
+
+P-value jest niższe od poziomu istotności, więc istnieją podstawy do odrzucenia hipotezy zerowej na rzecz hipotezy alternatywnej. Istnieje zależność pomiędzy wykonywaniem aktywności dodatkowych a wynikami uczniów z egzaminów.
+
+```{r Test 2.4}
+ggbetweenstats(
+  data = dane,
+  x = Motivation_Level,
+  y = Exam_Score,
+  type = "r"
+)
+```
+
+P-value jest niższe od poziomu istotności, więc istnieją podstawy do odrzucenia hipotezy zerowej na rzecz hipotezy alternatywnej. Istnieje zależność pomiędzy poziomem motywacji a wynikami uczniów z egzaminów.
+
+```{r Test 2.5}
+ggbetweenstats(
+  data = dane,
+  x = Internet_Access,
+  y = Exam_Score,
+  type = "r"
+)
+```
+
+P-value jest niższe od poziomu istotności, więc istnieją podstawy do odrzucenia hipotezy zerowej na rzecz hipotezy alternatywnej. Istnieje zależność pomiędzy dostępem do Internetu a wynikami uczniów z egzaminów.
+
+```{r Test 2.6}
+ggbetweenstats(
+  data = dane,
+  x = Peer_Influence,
+  y = Exam_Score,
+  type = "r"
+)
+```
+
+P-value jest niższe od poziomu istotności, więc istnieją podstawy do odrzucenia hipotezy zerowej na rzecz hipotezy alternatywnej. Istnieje zależność pomiędzy wpływem rówieśników a wynikami uczniów z egzaminu.
+
+```{r Test 2.7}
+ggbetweenstats(
+  data = dane,
+  x = Parental_Education_Level,
+  y = Exam_Score,
+  type = "r"
+)
+```
+
+P-value jest niższe od poziomu istotności, więc istnieją podstawy do odrzucenia hipotezy zerowej na rzecz hipotezy alternatywnej. Istnieje zależność pomiędzy wykształceniem rodziców a wynikami uczniów z egzaminu.
+
+```{r Test 2.8}
+ggbetweenstats(
+  data = dane,
+  x = Distance_from_Home,
+  y = Exam_Score,
+  type = "r"
+)
+```
+
+P-value jest niższe od poziomu istotności, więc istnieją podstawy do odrzucenia hipotezy zerowej na rzecz hipotezy alternatywnej. Istnieje zależność pomiędzy odległością od domu a wynikami uczniów z egzaminu.
 
 # 5. Modelowanie
 
@@ -971,8 +1060,6 @@ Jako ostatni etap projektu wykonano analizę za pomocą modelowania ekonometrycz
 ## 5.1. Oszacowanie modelu
 
 ```{r Model}
-library(censReg)
-
 dane_imp <- read_csv("czynniki-imputowane.csv")
 dane_imp$Exam_Score <- ifelse(dane_imp$Exam_Score > 100, 100, dane_imp$Exam_Score)
 
@@ -985,16 +1072,56 @@ model1 <- lm(formula = Exam_Score ~
                Parental_Education_Level + Distance_from_Home,
              data = dane_imp)
 summary(model1)
-
 ```
 
 ## 5.2. Diagnostyka modelu
 
-Tekst
+W tym podrozdziale została przedstawiona diagnostyka stworzonego modelu.
+
+Na podstawie współczynnika determinacji (statystyki R-kwadrat) można powiedzieć, że model tłumaczy 71,87% zmienności ocen uczniów z egzaminu.
+
+Testując przydatność modelu, hipoteza zerowa mówi, że model nie jest istotny statystycznie, natomiast hipoteza alternatywna mówi, że jest. Na podstawie testu F można określić, że p-value z tego testu jest niższe od poziomu istotności alfa równego 0,05, co oznacza, że istnieją podstawy do odrzucenia hipotezy zerowej na rzecz hipotezy alternatywnej, co oznacza, że model jest przydatny.
+
+Testując czy rozkład składnika resztowego jest rozkładem normalnym, hipoteza zerowa mówi, że rozkład jest rozkładem normalnym, a hipoteza alternatywna mówi, że nie jest. Można tu wykorzystać test Kołmogorowa-Smirnowa.
+
+```{r Diagnostyka}
+lillie.test(model1$residuals)
+```
+
+P-value z testu jest niższe od poziomu istotności, więc istnieją podstawy, by odrzucić hipotezę zerową na rzecz alternatywnej. Rozkład reszt nie jest rozkładem normalnym. Zatem następnym krokiem jest sprawdzenie jak wygląda rozkład składnika resztowego.
+
+```{r Histogram reszt}
+
+reszty <- tibble(res = model1$residuals)
+
+ggplot(reszty, aes(x = res)) +
+  geom_histogram(bins = 50, colour = "black", fill = "firebrick") +
+  labs(x = "Reszty modelu",
+       y = "Liczebność") +
+  my_theme
+```
+
+Jak widać na wykresie, reszty są bardzo silnie skupione wokół zera, z czego najprawdopodobniej wynika, że nie jest to rozkład normalny.
+
+Następnie można sprawdzić, czy reszty zachowują stałość wariancji (homoskedastyczność). Hipoteza zerowa mówi, że reszty zachowują stałość wariancji (są homoskedastyczne), natomiast hipoteza alternatywna mówi, że nie zachowują stałości wariancji (są heteroskedastyczne). Wykorzystany do tego zostanie test White'a.
+
+```{r White}
+ncvTest(model1)
+```
+
+P-value z testu White'a jest niższe od poziomu istotności, co oznacza, że są podstawy do odrzucenia hipotezy zerowej na rzecz hipotezy alternatywnej. Reszty modelu nie zachowują stałości wariancji, czyli są heteroskedastyczne.
+
+Następnie można sprawdzić, czy zmienne w modelu są współliniowe, co sugerowałoby potrzebę usunięcia tych zmiennych.
+
+```{r Współliniowość}
+vif(model1)
+```
+
+Wszystkie wartości VIF są bardzo bliskie 1, co oznacza, że zmienne zawarte w modelu nie są ze sobą skorelowane w żaden sposób, co jest pozytywne z punktu widzenia modelu.
+
+Ostatecznie można ocenić, że model nie jest złym modelem, ze względu na dość wysoki R-kwadrat oraz brak współliniowości zmiennych. Nie spełnia on jednak założenia normalności rozkładu reszt oraz homoskedastyczności reszt. Sugeruje to, że istnieją inne czynniki, niezawarte w tym zbiorze danych, które wpływają na wyniki uczniów z egzaminów.
 
 ## 5.3. Interpretacja modelu
-
-Na podstawie statystyki R-kwadrat można powiedzieć, że model tłumaczy 71,87% zmienności ocen uczniów z egzaminu.
 
 Interpretacja współczynników modelu:
 
@@ -1002,7 +1129,47 @@ Wzrost liczby godzin nauki o 1 godzinę powoduje wzrost wyniku z egzaminu średn
 
 Wzrost odsetka obecności o 1 p.p. powoduje wzrost wyniku z egzaminu średnio o 0,2 p.p., ceteris paribus.
 
+Uczniowie o niskim poziomie zaangażowania rodziców mają średnio o 1,9 p.p. niższe wyniki z egzaminu niż uczniowie o wysokim poziomie zaangażowania rodziców, ceteris paribus.
 
+Uczniowie o średnim poziomie zaangażowania rodziców mają średnio o 0,99 p.p. niższe wyniki z egzaminu niż uczniowie o wysokim poziomie zaangażowania rodziców, ceteris paribus.
+
+Uczniowie o niskim poziomie dostępu do zasobów mają średnio o 1,99 p.p. niższe wyniki z egzaminu niż uczniowie o wysokim poziomie dostępu do zasobów, ceteris paribus.
+
+Uczniowie o średnim poziomie dostępu do zasobów mają średnio o 0,96 p.p. niższe wyniki z egzaminu niż uczniowie o wysokim poziomie dostępu do zasobów, ceteris paribus.
+
+Uczniowie biorący udział w zajęciach pozalekcyjnych mają średnio o 0,55 p.p. wyższe wyniki z egzaminu niż uczniowie, którzy nie biorą udziału w żadnych zajęciach pozalekcyjnych, ceteris paribus.
+
+Wzrost poprzedniego wyniku o 1 p.p. powoduje wzrost wyniku z egzaminu średnio o 0,05 p.p., ceteris paribus.
+
+Uczniowie o niskim poziomie motywacji mają średnio o 1,02 p.p. niższy wynik z egzaminu niż uczniowie o wysokim poziomie motywacji, ceteris paribus.
+
+Uczniowie o średnim poziomie motywacji mają średnio o 0,54 p.p. niższy wynik z egzaminu niż uczniowie o wysokim poziomie motywacji, ceteris paribus.
+
+Uczniowie z dostępem do Internetu mają średnio o 0,89 p.p. wyższy wynik z egzaminu niż uczniowie bez dostępu do Internetu, ceteris paribus.
+
+Wzrost liczby godzin korepetycji o 1 godzinę powoduje wzrost wyniku z egzaminu średnio o 0,48 p.p., ceteris paribus.
+
+Uczniowie o niskim poziomie dochodu w rodzinie mają średnio o 0,99 p.p. niższe wyniki z egzaminu niż uczniowie o wysokim poziomie dochodów w rodzinie, ceteris paribus.
+
+Uczniowie o średnim poziomie dochodu w rodzinie mają średnio o 0,5 p.p. niższe wyniki z egzaminu niż uczniowie o wysokim poziomie dochodów w rodzinie, ceteris paribus.
+
+Uczniowie o niskiej jakości nauczycieli mają średnio o 0,97 p.p. niższe wyniki z egzaminu niż uczniowie o wysokiej jakości nauczycieli, ceteris paribus.
+
+Uczniowie o średniej jakości nauczycieli mają średnio o 0,48 p.p. niższe wyniki z egzaminu niż uczniowie o wysokiej jakości nauczycieli, ceteris paribus.
+
+Uczniowie o neutralnym wpływie rówieśników mają średnio o 0,5 p.p. wyższe wyniki z egzaminu niż uczniowie o negatywnym wpływie rówieśników, ceteris paribus.
+
+Uczniowie o pozytywnym wpływie rówieśników mają średnio o 0,98 p.p. wyższe wyniki z egzaminu niż uczniowie o negatywnym wpływie rówieśników, ceteris paribus.
+
+Uczniowie posiadający trudności w uczeniu się mają średnio o 0,82 p.p. niższe wyniki z egzaminu niż uczniowie, którzy ich nie posiadają, ceteris paribus.
+
+Uczniowie, których rodzice mają maksymalnie wykształcenie szkoły średniej mają średnio o 0,44 p.p. niższe wyniki z egzaminu niż uczniowie, których rodzice mają maksymalnie wykształcenie z uczelni wyższej, ceteris paribus.
+
+Uczniowie, których rodzice mają maksymalnie wykształcenie ze studiów podyplomowych mają średnio o 0,47 p.p. wyższe wyniki z egzaminu niż uczniowie, których rodzice mają maksymalnie wykształcenie z uczelni wyższej, ceteris paribus.
+
+Uczniowie, którzy mają umiarkowaną odległość szkoły od miejsca zamieszkania mają średnio o 0,4 p.p. wyższe wyniki z egzaminu niż uczniowie, którzy mają daleko do szkoły, ceteris paribus.
+
+Uczniowie, którzy mają blisko do szkoły od miejsca zamieszkania mają średnio o 0,88 p.p. wyższe wyniki z egzaminu niż uczniowie, którzy mają daleko do szkoły, ceteris paribus.
 
 # 6. Podsumowanie
 
