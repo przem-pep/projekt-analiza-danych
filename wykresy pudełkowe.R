@@ -341,6 +341,75 @@ cramer_matrix <- matrix(NA, nrow = length(categorical_vars), ncol = length(categ
                         dimnames = list(categorical_vars, categorical_vars))
 
 #Obliczanie Cramera dla każdej pary zmiennych
+
+
+install.packages("ggplot2")
+library(ggplot2)
+
+#Histogram godzin nauki w tygodniu
+
+ggplot(czynniki, aes(x = Hours_Studied)) +
+  geom_histogram(binwidth = 1, fill = "blue", color = "black", alpha = 0.7) +
+  labs(title = "Histogram godzin nauki w tygodniu", 
+       x = "Liczba godzin nauki", 
+       y = "Ilość osób") +
+  theme_minimal()
+
+
+#Histogram obecności na zajęciach
+
+ggplot(czynniki, aes(x = Attendance)) +
+  geom_histogram(binwidth = 5, fill = "red", color = "black", alpha = 0.7) +
+  labs(title = "Histogram obecności na zajęciach", 
+       x = "Obecność [%]", 
+       y = "Ilość osób") +
+  theme_minimal()
+
+#Histogram średniej liczby godzin snu w ciągu nocy
+
+ggplot(czynniki, aes(x = Sleep_Hours)) +
+  geom_histogram(binwidth = 1, fill = "pink", color = "black", alpha = 0.7) +
+  labs(title = "Histogram średniej liczby godzin snu w ciągu nocy", 
+       x = "Liczba godzin snu", 
+       y = "Ilość osób") +
+  theme_minimal()
+
+#Histogram wyników z poprzednich egzaminów
+
+ggplot(czynniki, aes(x = Previous_Scores)) +
+  geom_histogram(binwidth = 5, fill = "green", color = "black", alpha = 0.7) +
+  labs(title = "Histogram wyników z poprzednich egzaminów", 
+       x = "Wyniki [%]", 
+       y = "Ilość osób") +
+  theme_minimal()
+
+#Histogram liczby sesji korepetycji w miesiącu
+
+ggplot(czynniki, aes(x = Tutoring_Sessions)) +
+  geom_histogram(binwidth = 1, fill = "purple", color = "black", alpha = 0.7) +
+  labs(title = "Histogram liczby sesji korepetycji w miesiącu", 
+       x = "Liczba sesji", 
+       y = "Ilość osób") +
+  theme_minimal()
+
+#Histogram średniej liczby godzin aktywności fizycznej w tygodniu
+
+ggplot(czynniki, aes(x = Physical_Activity)) +
+  geom_histogram(binwidth = 1, fill = "blue", color = "black", alpha = 0.7) +
+  labs(title = "Histogram średniej liczby godzin aktywności fizycznej w tygodniu", 
+       x = "Liczba godzin", 
+       y = "Ilość osób") +
+  theme_minimal()
+
+#Histogram wyników z egzaminu
+
+ggplot(czynniki, aes(x = Exam_Score)) +
+  geom_histogram(binwidth = 5, fill = "brown", color = "black", alpha = 0.7) +
+  labs(title = "Histogram wyników z egzaminu", 
+       x = "Wynik [%]", 
+       y = "Ilość osób") +
+  theme_minimal()
+
 for (i in 1:(length(categorical_vars) - 1)) {
   for (j in (i + 1):length(categorical_vars)) {
     var1 <- categorical_vars[i]
