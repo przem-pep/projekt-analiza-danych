@@ -7,13 +7,16 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
 library(tidyverse)
 library(validate)
 library(dlookr)
 library(plotly)
+library(Rcmdr)
+library(corrplot)
+library(vcd)
 
 dane <- read_csv("czynniki.csv")
-
 
 
 ```
@@ -35,9 +38,9 @@ Zestaw ten posiada 20 zmiennych oraz 6607 obserwacji.
 
 Dane ogólnie rzecz biorąc nie wymagają dużo oczyszczania, nazwy zmiennych nie zawierają spacji ani polskich znaków, a obserwacje są zapisane w poprawny sposób. Zmienne jakościowe można jednak zmienić na typ factor, w celu ułatwienia analizy.
 
-### 1.2.1. Zmiana typu zmiennych ilościowych na typ factor
+### 1.2.1. Zmiana typu zmiennych jakościowych na typ factor
 
-Poniższy kod został wykorzystany, aby zmienić typ zmiennych ilościowych z typu character na typ factor.
+Poniższy kod został wykorzystany, aby zmienić typ zmiennych jakościowych z typu character na typ factor.
 
 ```{r}
 dane$Parental_Involvement <- ifelse(dane$Parental_Involvement == "Low", 1,
@@ -395,8 +398,6 @@ ggplotly(wykres6)
 
 ggplotly(wykres7)
 ```
-
-
 
 ## 2.2. Histogramy
 
@@ -795,12 +796,109 @@ ggplotly(wykres46)
 
 # 3. Analiza opisowa
 
-Tekst
+Kolejnym etapem projektu było wykonanie analizy opisowej danych. W tym celu obliczono statystyki opisowe dla zmiennych ilościowych i korelacje dla zmiennych ilościowych oraz jakościowych.
+
+## 3.1. Statystyki opisowe
+
+Poniżej przedstawiono statystyki opisowe dla zmmiennych ilościowych. Obliczone zostały: średnia arytmetyczna, odchylenie standardowe, rozstęp międzykwartylowy, współczynnik zmienności, skośność, kurtoza oraz wszystkie kwartyle, w tym mediana.
+
+```{r}
+stat_opisowe <- dane %>%
+  select(where(is.numeric)) %>%
+  numSummary(statistics = c("mean", "sd", "IQR", "CV", "quantiles",
+                            "skewness", "kurtosis"))
+
+round(stat_opisowe$table, 3)
+```
+
+## 3.2. Korelacje
+
+Poniżej przedstawione zostały korelacje pomiędzy zmiennymi ilościowymi, wyznaczone za pomocą współczynnika korelacji r Pearsona.
+
+```{r}
+dane %>%
+  select(where(is.numeric)) %>%
+  cor()
+```
+
+## 3.3. Macierz korelacji
+
+### 3.3.1. Macierz korelacji zmiennych ilościowych
+
+Poniżej przedstawiono macierz korelacji dla zmiennych ilościowych. Korelacje obliczone zostały za pomocą współczynnika korelacji r Pearsona.
+
+```{r}
+
+cor_matrix <- dane %>%
+  select(where(is.numeric)) %>%
+  cor()
+
+cor_matrix <- cor(czynniki[, c("Hours_Studied", "Attendance", "Sleep_Hours", 
+                               "Previous_Scores", "Tutoring_Sessions", 
+                               "Physical_Activity", "Exam_Score")], 
+                  use = "pairwise.complete.obs")
+
+corrplot(cor_matrix, method = "color", tl.cex = 0.8, addCoef.col = "black")
+```
+
+### 3.3.2. Macierz korelacji zmiennych jakościowych
+
+Poniżej zaprezentowano macierz korelacji zmiennych jakościowych.
+
+```{r}
+
+# Filtracja danych ilościowych
+
+dane_cor <- dane %>%
+  select(where(is.factor))
+
+
+# Przygotowanie argumentu do obliczenia korelacji
+
+categorical_vars <- c("Parental_Involvement", "Access_to_Resources",
+                      "Extracurricular_Activities", "Motivation_Level",
+                      "Internet_Access", "Family_Income", "Teacher_Quality",
+                      "School_Type", "Peer_Influence",
+                      "Learning_Disabilities", "Parental_Education_Level",
+                      "Distance_from_Home", "Gender")
+
+# Definiowanie funkcji do obliczenia wartości współczynnika V Cramera
+
+calculate_cramer_v <- function(var1, var2) {
+  contingency_table <- table(var1, var2)
+  cramer_v_result <- assocstats(contingency_table)$cramer
+  return(cramer_v_result)
+}
+
+# Przygotowanie pustej macierzy, w której zostaną zapisane wyniki
+
+cramer_matrix <- matrix(NA, nrow = length(categorical_vars), ncol = length(categorical_vars), 
+                        dimnames = list(categorical_vars, categorical_vars))
+
+# Obliczanie Cramera dla każdej pary zmiennych
+for (i in 1:(length(categorical_vars) - 1)) {
+  for (j in (i + 1):length(categorical_vars)) {
+    var1 <- categorical_vars[i]
+    var2 <- categorical_vars[j]
+    cramer_matrix[i, j] <- calculate_cramer_v(dane_cor[[var1]], dane_cor[[var2]])
+    cramer_matrix[j, i] <- cramer_matrix[i, j]
+  }
+}
+
+# Wizualizacja macierzy Cramera
+corrplot(cramer_matrix, method = "color", tl.cex = 0.8, addCoef.col = "black")
+
+```
+
 
 # 4. Wnioskowanie statystyczne
 
 Tekst
 
-# 5. Podsumowanie
+# 5. Modelowanie
+
+Tekst
+
+# 6. Podsumowanie
 
 Tekst
